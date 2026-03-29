@@ -1,0 +1,17 @@
+export const C = {
+  bg:          '#0A0E13',
+  surface:     '#111827',
+  surfaceAlt:  '#141C26',
+  surfaceBrd:  '#1E2D3D',
+  accent:      '#00E5FF',
+  accentDim:   '#00B8CC',
+  accentGlow:  'rgba(0,229,255,0.18)',
+  textPrimary: '#FFFFFF',
+  textSec:     '#94A3B8',
+  textMuted:   '#4B5563',
+  badge:       '#7C3AED',
+  danger:      '#FF4757',
+  success:     '#10B981',
+  overlay:     'rgba(10,14,19,0.92)',
+  cardBrd:     'rgba(255,255,255,0.06)',
+};

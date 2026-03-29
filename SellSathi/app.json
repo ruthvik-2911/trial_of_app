@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "SellSathi",
+    "slug": "sellsathi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0A0E13"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0A0E13"
+      },
+      "edgeToEdgeEnabled": true
+    }
+  }
+}
