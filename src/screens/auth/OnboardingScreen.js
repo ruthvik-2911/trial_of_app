@@ -37,6 +37,7 @@ import {
     StatusBar,
     Animated,
     Platform,
+    Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -136,12 +137,12 @@ const LuxuryIllustration = ({ accent }) => {
 
     // Orbiting product emojis
     const ORBIT_ITEMS = [
-        { emoji: '💎', angle: 0 },
-        { emoji: '⌚', angle: 60 },
-        { emoji: '👗', angle: 120 },
-        { emoji: '👟', angle: 180 },
-        { emoji: '💄', angle: 240 },
-        { emoji: '🛍️', angle: 300 },
+        { image: 'https://tse4.mm.bing.net/th/id/OIP.VjdNWbB7EZk9uQ2Ob_A_KwHaEv?pid=ImgDet&w=474&h=303&rs=1&o=7&rm=3', angle: 0 },
+        { image: 'https://watchcollectors.co.uk/cdn/shop/files/Rolex_Seadweller_02.jpg?v=1716635008', angle: 60 },
+        { image: 'https://th.bing.com/th/id/OIP.DvPaIGGgRFBCN1Vvku0-0gHaEc?w=304&h=182&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3', angle: 120 },
+        { image: 'https://i.pinimg.com/originals/d1/a0/c1/d1a0c17aeff9754c070ce0f773529fee.jpg', angle: 180 },
+        { image: 'https://images.unsplash.com/photo-1539109136881-3be0610cac48?auto=format&fit=crop&q=80&w=600', angle: 240 },
+        { image: 'https://th.bing.com/th/id/OIP.UZ3ydmCqrstP9nNL4Tu6vQHaHa?w=208&h=208&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3', angle: 300 },
     ];
 
     const ORBIT_R = 110;
@@ -168,7 +169,11 @@ const LuxuryIllustration = ({ accent }) => {
                             { transform: [{ rotate: spin }, { translateX: x }, { translateY: y }, { rotate: rotate.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-360deg'] }) }] },
                         ]}
                     >
-                        <Text style={{ fontSize: 28 }}>{item.emoji}</Text>
+                        <Image
+                            source={{ uri: item.image }}
+                            style={styles.orbitImage}
+                            resizeMode="cover"
+                        />
                     </Animated.View>
                 );
             })}
@@ -620,7 +625,6 @@ const styles = StyleSheet.create({
         width: 260,
         height: 260,
         borderRadius: 130,
-        filter: 'blur(60px)',
     },
 
     // Luxury illustration
@@ -643,10 +647,17 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 50,
         height: 50,
-        borderRadius: 14,
+        borderRadius: 25,
         backgroundColor: 'rgba(123,94,234,0.2)',
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
+        borderWidth: 1.5,
+        borderColor: 'rgba(255,255,255,0.1)',
+    },
+    orbitImage: {
+        width: '100%',
+        height: '100%',
     },
     centreCircle: {
         width: 90,

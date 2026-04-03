@@ -13,6 +13,7 @@ import {
     StatusBar,
     Animated,
     Platform,
+    ImageBackground,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -70,22 +71,46 @@ const CategoryItem = ({ item, colors, isSelected, onPress }) => (
 );
 
 // ─── Flash Deal Card ───────────────────────────────────────────────────────
-const FlashDealCard = ({ item }) => (
-    <LinearGradient colors={item.gradientColors} style={styles.dealCard} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-        <View style={styles.dealContent}>
-            <View style={[styles.dealBadge, { backgroundColor: item.accentColor + '25', borderColor: item.accentColor + '60' }]}>
-                <Text style={[styles.dealBadgeText, { color: item.accentColor }]}>{item.badge}</Text>
+const FlashDealCard = ({ item, colors, navigation }) => (
+    <TouchableOpacity activeOpacity={0.95}>
+        <ImageBackground
+            source={{ uri: item.image }}
+            style={styles.dealCard}
+            imageStyle={{ borderRadius: 24 }}
+        >
+            <View style={styles.dealOverlay}>
+                <LinearGradient
+                    colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.85)']}
+                    style={StyleSheet.absoluteFillObject}
+                />
+                <View style={styles.dealContent}>
+                    <View style={styles.dealBadge}>
+                        <Ionicons name="sparkles" size={10} color="#fff" style={{ marginRight: 4 }} />
+                        <Text style={styles.dealBadgeText}>{item.badge}</Text>
+                    </View>
+                    <Text style={styles.dealTitle}>{item.title}</Text>
+                    <Text style={styles.dealSubtitle}>{item.subtitle}</Text>
+                    
+                    <View style={styles.dealButtonRow}>
+                        <TouchableOpacity 
+                            style={styles.dealPrimaryBtn} 
+                            activeOpacity={0.8}
+                            onPress={() => navigation.navigate('ProductList', { title: item.title, layout: 'grid' })}
+                        >
+                            <Text style={styles.dealPrimaryBtnText}>{item.cta}  →</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={styles.dealSecondaryBtn} 
+                            activeOpacity={0.8}
+                            onPress={() => navigation.navigate('ProductList', { title: item.secondaryCta, layout: 'horizontal' })}
+                        >
+                            <Text style={styles.dealSecondaryBtnText}>{item.secondaryCta}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
-            <Text style={styles.dealTitle}>{item.title}</Text>
-            <Text style={styles.dealSubtitle}>{item.subtitle}</Text>
-            <TouchableOpacity style={[styles.dealCta, { backgroundColor: item.accentColor }]} activeOpacity={0.8}>
-                <Text style={[styles.dealCtaText, { color: '#0D0B1E' }]}>{item.cta}</Text>
-            </TouchableOpacity>
-        </View>
-        <View style={[styles.dealCircle, { borderColor: item.accentColor + '30' }]} />
-        <View style={[styles.dealCircleSmall, { borderColor: item.accentColor + '20' }]} />
-        <Text style={styles.dealEmoji}>💎</Text>
-    </LinearGradient>
+        </ImageBackground>
+    </TouchableOpacity>
 );
 
 // ─── Product Card ──────────────────────────────────────────────────────────
@@ -212,6 +237,12 @@ const HomeScreen = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor="transparent" translucent />
 
+            <ImageBackground
+                source={{ uri: 'https://images.unsplash.com/photo-1586075010633-2442dcad1f4a?auto=format&fit=crop&q=80&w=1000' }}
+                style={StyleSheet.absoluteFillObject}
+                imageStyle={{ opacity: isDark ? 0.08 : 0.4 }}
+            />
+
             {/* Header */}
             <SafeAreaView edges={['top']} style={{ zIndex: 10 }}>
                 <Animated.View style={[styles.header, { backgroundColor: headerBg }]}>
@@ -256,7 +287,7 @@ const HomeScreen = ({ navigation }) => {
 
                 {/* Categories */}
                 <FlatList
-                    data={CATEGORIES}
+                    data={[...CATEGORIES.slice(0, 7), { id: 'more', name: 'More...', icon: 'grid-outline', color: colors.accent }]}
                     keyExtractor={(i) => i.id}
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -266,7 +297,13 @@ const HomeScreen = ({ navigation }) => {
                             item={item}
                             colors={colors}
                             isSelected={selectedCategory === item.id}
-                            onPress={() => navigation.navigate('CategoryScreen', { category: item.name })}
+                            onPress={() => {
+                                if (item.id === 'more') {
+                                    navigation.navigate('AllCategories');
+                                } else {
+                                    navigation.navigate('CategoryScreen', { category: item.name });
+                                }
+                            }}
                         />
                     )}
                 />
@@ -284,7 +321,7 @@ const HomeScreen = ({ navigation }) => {
                     onMomentumScrollEnd={(e) =>
                         setDealIndex(Math.round(e.nativeEvent.contentOffset.x / (DEAL_WIDTH + 12)))
                     }
-                    renderItem={({ item }) => <FlashDealCard item={item} />}
+                    renderItem={({ item }) => <FlashDealCard item={item} colors={colors} navigation={navigation} />}
                 />
 
                 {/* Deal Pagination Dots */}
@@ -348,17 +385,44 @@ const styles = StyleSheet.create({
     categoryCircle: { width: 58, height: 58, borderRadius: 29, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
     categoryLabel: { fontSize: 11, fontWeight: '500' },
     dealsContainer: { paddingHorizontal: 16, gap: 12 },
-    dealCard: { width: DEAL_WIDTH, borderRadius: 20, padding: 20, minHeight: 160, overflow: 'hidden', position: 'relative', marginRight: 12 },
-    dealContent: { flex: 1, zIndex: 2 },
-    dealBadge: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, marginBottom: 10 },
-    dealBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
-    dealTitle: { fontSize: 20, fontWeight: '800', color: '#FFFFFF', lineHeight: 26, marginBottom: 6 },
-    dealSubtitle: { fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 14 },
-    dealCta: { alignSelf: 'flex-start', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10 },
-    dealCtaText: { fontSize: 13, fontWeight: '700' },
-    dealCircle: { position: 'absolute', width: 140, height: 140, borderRadius: 70, borderWidth: 1, right: -30, bottom: -30 },
-    dealCircleSmall: { position: 'absolute', width: 80, height: 80, borderRadius: 40, borderWidth: 1, right: 20, top: -10 },
-    dealEmoji: { position: 'absolute', right: 20, bottom: 20, fontSize: 48 },
+    dealCard: { width: DEAL_WIDTH, borderRadius: 24, height: 200, overflow: 'hidden', marginRight: 12 },
+    dealOverlay: { flex: 1, padding: 20, justifyContent: 'flex-end' },
+    dealContent: { zIndex: 2 },
+    dealBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.4)',
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginBottom: 10,
+        backgroundColor: 'rgba(255,255,255,0.1)'
+    },
+    dealBadgeText: { fontSize: 11, fontWeight: '600', color: '#fff' },
+    dealTitle: { fontSize: 24, fontWeight: '900', color: '#FFFFFF', lineHeight: 28, marginBottom: 4, letterSpacing: -0.5 },
+    dealSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.85)', marginBottom: 16, maxWidth: '85%' },
+    dealButtonRow: { flexDirection: 'row', gap: 10 },
+    dealPrimaryBtn: {
+        backgroundColor: '#FFFFFF',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    dealPrimaryBtnText: { fontSize: 13, fontWeight: '700', color: '#000' },
+    dealSecondaryBtn: {
+        borderWidth: 1.5,
+        borderColor: '#FFFFFF',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    dealSecondaryBtnText: { fontSize: 13, fontWeight: '700', color: '#FFFFFF' },
     paginationDots: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 24 },
     dot: { height: 6, borderRadius: 3 },
     sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 14 },
