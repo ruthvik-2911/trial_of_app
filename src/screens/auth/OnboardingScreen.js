@@ -140,12 +140,12 @@ const LuxuryIllustration = ({ accent }) => {
         { image: 'https://tse4.mm.bing.net/th/id/OIP.VjdNWbB7EZk9uQ2Ob_A_KwHaEv?pid=ImgDet&w=474&h=303&rs=1&o=7&rm=3', angle: 0 },
         { image: 'https://watchcollectors.co.uk/cdn/shop/files/Rolex_Seadweller_02.jpg?v=1716635008', angle: 60 },
         { image: 'https://th.bing.com/th/id/OIP.DvPaIGGgRFBCN1Vvku0-0gHaEc?w=304&h=182&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3', angle: 120 },
-        { image: 'https://i.pinimg.com/originals/d1/a0/c1/d1a0c17aeff9754c070ce0f773529fee.jpg', angle: 180 },
-        { image: 'https://images.unsplash.com/photo-1539109136881-3be0610cac48?auto=format&fit=crop&q=80&w=600', angle: 240 },
+        { image: 'https://th.bing.com/th?id=OPAC.xxOGChDQ%2fE9Kng474C474&w=200&h=211&c=17&dpr=1.3&pid=21.1', angle: 180 },
+        { image: 'https://th.bing.com/th/id/OIP.8KR1ZFwTyVHCYOehYSAdjwHaHa?w=191&h=191&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3', angle: 240 },
         { image: 'https://th.bing.com/th/id/OIP.UZ3ydmCqrstP9nNL4Tu6vQHaHa?w=208&h=208&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3', angle: 300 },
     ];
 
-    const ORBIT_R = 110;
+    const ORBIT_R = 125;
 
     return (
         <View style={styles.illustrationContainer}>
@@ -630,10 +630,10 @@ const styles = StyleSheet.create({
     // Luxury illustration
     orbitRing: {
         position: 'absolute',
-        width: 240,
-        height: 240,
-        borderRadius: 120,
-        borderWidth: 1,
+        width: 260,
+        height: 260,
+        borderRadius: 130,
+        borderWidth: 1.5,
         borderStyle: 'dashed',
     },
     orbitRingInner: {
@@ -645,19 +645,26 @@ const styles = StyleSheet.create({
     },
     orbitItem: {
         position: 'absolute',
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: 'rgba(123,94,234,0.2)',
+        width: 65,
+        height: 65,
+        borderRadius: 32.5,
+        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
-        borderWidth: 1.5,
-        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 2,
+        borderColor: '#FFD700',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 8,
     },
     orbitImage: {
         width: '100%',
         height: '100%',
+        borderRadius: 32.5,
+        overflow: 'hidden',
     },
     centreCircle: {
         width: 90,

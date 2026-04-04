@@ -11,6 +11,8 @@ import WalletScreen from '../screens/profile/WalletScreen';
 import ChangePasswordScreen from '../screens/profile/ChangePasswordScreen';
 import CouponsScreen from '../screens/profile/Couponsscreen';
 import ThemeSettingsScreen from '../screens/profile/ThemeSettingsScreen';
+import FAQScreen from '../screens/profile/FAQScreen';
+import SupportContentScreen from '../screens/profile/SupportContentScreen';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +35,8 @@ const ProfileStack = () => {
             <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
             <Stack.Screen name="Coupons" component={CouponsScreen} />
             <Stack.Screen name="ThemeSettings" component={ThemeSettingsScreen} />
+            <Stack.Screen name="FAQ" component={FAQScreen} />
+            <Stack.Screen name="SupportContent" component={SupportContentScreen} />
         </Stack.Navigator>
     );
 };

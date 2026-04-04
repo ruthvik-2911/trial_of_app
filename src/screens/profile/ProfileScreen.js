@@ -174,6 +174,18 @@ const ProfileScreen = ({ navigation }) => {
             navigation.navigate('Coupons');
             return;
         }
+        if (title === 'FAQ') {
+            navigation.navigate('FAQ');
+            return;
+        }
+        if (title === 'Contact Us') {
+            Alert.alert('Contact Support', 'Our team is available 24/7.\nEmail: support@gudkart.com\nPhone: +91 1800-456-789');
+            return;
+        }
+        if (['Cancellation & Returns', 'Terms of Use', 'Security', 'Privacy'].includes(title)) {
+            navigation.navigate('SupportContent', { title });
+            return;
+        }
         Alert.alert(title, 'Coming soon!');
     };
 
@@ -406,8 +418,16 @@ const ProfileScreen = ({ navigation }) => {
                         icon="help-circle-outline"
                         iconColor="#60A5FA"
                         label="Help Centre"
-                        sublabel="FAQs & live chat"
-                        onPress={() => Alert.alert('Help', 'Coming soon!')}
+                        sublabel="Live chat with our team"
+                        onPress={() => handleAccountAction('Contact Us')}
+                        colors={colors}
+                    />
+                    <MenuRow
+                        icon="list-outline"
+                        iconColor="#FB923C"
+                        label="FAQ"
+                        sublabel="Common questions & answers"
+                        onPress={() => handleAccountAction('FAQ')}
                         colors={colors}
                     />
                     <MenuRow
@@ -424,6 +444,39 @@ const ProfileScreen = ({ navigation }) => {
                         label="About Gudkart"
                         sublabel="Version 1.0.0"
                         onPress={() => Alert.alert('About', 'Gudkart v1.0.0\nYour Premium Marketplace')}
+                        colors={colors}
+                        isLast
+                    />
+                </SectionCard>
+
+                {/* ── Consumer Policy ─────────────────────────────────────────── */}
+                <SectionCard title="CONSUMER POLICY" colors={colors}>
+                    <MenuRow
+                        icon="return-up-back-outline"
+                        iconColor="#FF6B6B"
+                        label="Cancellation & Returns"
+                        onPress={() => handleAccountAction('Cancellation & Returns')}
+                        colors={colors}
+                    />
+                    <MenuRow
+                        icon="document-text-outline"
+                        iconColor="#7B5EEA"
+                        label="Terms of Use"
+                        onPress={() => handleAccountAction('Terms of Use')}
+                        colors={colors}
+                    />
+                    <MenuRow
+                        icon="shield-checkmark-outline"
+                        iconColor="#4ADE80"
+                        label="Security"
+                        onPress={() => handleAccountAction('Security')}
+                        colors={colors}
+                    />
+                    <MenuRow
+                        icon="lock-closed-outline"
+                        iconColor="#F472B6"
+                        label="Privacy"
+                        onPress={() => handleAccountAction('Privacy')}
                         colors={colors}
                         isLast
                     />
