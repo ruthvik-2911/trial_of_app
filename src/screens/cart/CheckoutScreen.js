@@ -56,6 +56,7 @@ const CheckoutScreen = ({ navigation, route }) => {
     const [saveShipping, setSaveShipping] = useState(true);
     const [isGSTEnabled, setIsGSTEnabled] = useState(false);
     const [gstNumber, setGstNumber] = useState('');
+    const [companyName, setCompanyName] = useState('');
 
     const paymentMethods = [
         { id: 'cod', name: 'Cash on Delivery', icon: 'cash-outline', subtitle: 'Pay when you receive' },
@@ -390,7 +391,10 @@ const CheckoutScreen = ({ navigation, route }) => {
 
     // ── Render ──────────────────────────────────────────────────────────────
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <SafeAreaView
+            style={[styles.container, { backgroundColor: isDark ? '#1A0B2E' : colors.background }]}
+            edges={['top', 'bottom']}
+        >
             <LinearGradient colors={isDark ? ['#1A0B2E', '#2E1A47'] : [colors.background, colors.surface]} style={styles.gradient}>
 
                 {/* Header */}
@@ -489,13 +493,15 @@ const CheckoutScreen = ({ navigation, route }) => {
                                     />
                                     <View style={{ flex: 1, marginLeft: 8 }}>
                                         <Text style={[styles.gstTitle, { color: colors.textPrimary }]}>I have a GST Number</Text>
-                                        <Text style={[styles.gstSub, { color: colors.textMuted }]}>Add your GST number for business purchases (optional)</Text>
+                                        <Text style={[styles.gstSub, { color: colors.textMuted }]}>Ensure GST details match your billing address</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
 
                             {isGSTEnabled && (
                                 <View style={styles.gstInputContainer}>
+                                    {/* GST Number */}
+                                    <Text style={[styles.gstFieldLabel, { color: colors.textSecondary }]}>GST Number</Text>
                                     <TextInput
                                         style={[styles.gstInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.textPrimary }]}
                                         placeholder="Enter GST Number (e.g., 29ABCDE1234F1Z5)"
@@ -505,10 +511,22 @@ const CheckoutScreen = ({ navigation, route }) => {
                                         autoCapitalize="characters"
                                         maxLength={15}
                                     />
-                                    <View style={[styles.gstHintContainer, { backgroundColor: '#E0F2FE' }]}>
+
+                                    {/* Business / Company Name */}
+                                    <Text style={[styles.gstFieldLabel, { color: colors.textSecondary, marginTop: 14 }]}>Business / Company Name</Text>
+                                    <TextInput
+                                        style={[styles.gstInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.textPrimary }]}
+                                        placeholder="Enter your business or company name"
+                                        placeholderTextColor={colors.textMuted}
+                                        value={companyName}
+                                        onChangeText={setCompanyName}
+                                        autoCapitalize="words"
+                                    />
+
+                                    <View style={[styles.gstHintContainer, { backgroundColor: isDark ? 'rgba(30,64,175,0.15)' : '#E0F2FE' }]}>
                                         <Text style={styles.gstHintText}>
-                                            <Text style={{ fontWeight: 'bold', color: '#1E40AF' }}>Format: </Text>
-                                            <Text style={{ color: '#1E40AF' }}>2 digits (state code) + 5 letters (PAN) + 4 digits + 1 letter + 1 letter/digit + Z + 1 letter/digit</Text>
+                                            <Text style={{ fontWeight: 'bold', color: '#cbd4f1ff' }}>Format: </Text>
+                                            <Text style={{ color: '#cbd4f1ff' }}>2 digits (state code) + 5 letters (PAN) + 4 digits + 1 letter + 1 letter/digit + Z + 1 letter/digit</Text>
                                         </Text>
                                     </View>
                                 </View>
@@ -843,6 +861,7 @@ const getStyles = (colors, isDark, insets) => StyleSheet.create({
     gstSub: { fontSize: 13, marginTop: 2 },
 
     gstInputContainer: { marginTop: 16 },
+    gstFieldLabel: { fontSize: 13, fontWeight: '700', marginBottom: 8 },
     gstInput: {
         height: 54, borderRadius: 12, borderWidth: 1, paddingHorizontal: 16,
         fontSize: 16, fontWeight: '500', marginBottom: 12,

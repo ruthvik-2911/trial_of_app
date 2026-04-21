@@ -45,11 +45,6 @@ export const CartProvider = ({ children }) => {
 
     // ─── Persist to AsyncStorage whenever cartItems change (offline backup) ─
     useEffect(() => {
-        // 🛒 DEBUG — logs every time cartItems changes
-        console.log(
-            `🛒 [CartContext] cartItems changed | uid=${uid ?? 'null'} | count=${cartItems.length}`,
-            cartItems.map(i => ({ id: i.id, name: i.name, qty: i.quantity }))
-        );
         if (hasLoaded.current) {
             saveCartToLocal(cartItems);
         }
@@ -65,27 +60,21 @@ export const CartProvider = ({ children }) => {
             const normalised = serverItems.map(normaliseItem);
 
             if (normalised.length > 0) {
-                // ✅ Server has items — use them as source of truth
-                console.log('🛒 [CartContext] Loaded from server — count:', normalised.length);
+                // Server has items — use them as source of truth
                 setCartItems(normalised);
                 hasLoaded.current = true;
             } else {
-                // ⚠️ Server returned empty — check local backup
-                // (syncCartToServer may have failed silently when items were added)
-                console.log('🛒 [CartContext] Server returned empty — checking local backup for uid:', uid);
+                // Server returned empty — check local backup
                 const key = cartStorageKey(uid);
                 const saved = await AsyncStorage.getItem(key);
                 const localItems = saved ? JSON.parse(saved) : [];
 
                 if (localItems.length > 0) {
                     // Local has items — restore them and re-push to server
-                    console.log('🛒 [CartContext] Restoring cart from local backup — count:', localItems.length);
                     setCartItems(localItems);
-                    // Re-sync to server so next login also gets them from server
                     syncCartToServer(localItems);
                 } else {
                     // Genuinely empty — both server and local agree
-                    console.log('🛒 [CartContext] Cart is genuinely empty (server + local both empty)');
                     setCartItems([]);
                 }
                 hasLoaded.current = true;
@@ -168,8 +157,6 @@ export const CartProvider = ({ children }) => {
     // ─── Cart operations ────────────────────────────────────────────────────
 
     const addToCart = useCallback((product, quantity = 1, selectedColor = null) => {
-        // 🛒 DEBUG — log when a product is added and the current uid
-        console.log(`🛒 [CartContext] addToCart called | uid=${uid ?? 'null'} | productId=${product?.id}`);
         let message = '';
         setCartItems(prev => {
             const existingIdx = prev.findIndex(
@@ -217,8 +204,7 @@ export const CartProvider = ({ children }) => {
     }, [uid]);
 
     const addMultipleToCart = useCallback((products) => {
-        console.log(`🛒 [CartContext] addMultipleToCart called | uid=${uid ?? 'null'} | count=${products.length}`);
-        
+
         setCartItems(prev => {
             let updated = [...prev];
             

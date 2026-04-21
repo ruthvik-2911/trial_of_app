@@ -29,7 +29,13 @@ const AppNavigator = () => (
     <NavigationContainer>
         <Stack.Navigator
             initialRouteName="Splash"
-            screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+            screenOptions={{
+                headerShown: false,
+                animation: 'slide_from_right',
+                animationDuration: 200,         // faster transition (default ~350ms)
+                detachPreviousScreen: false,    // keeps prev screen mounted for back-swipe
+                gestureEnabled: true,
+            }}
         >
             {/* Splash */}
             <Stack.Screen name="Splash" component={Splash} />

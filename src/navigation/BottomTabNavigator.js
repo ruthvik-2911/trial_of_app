@@ -24,11 +24,12 @@ const TAB_CONFIG = [
     { name: 'Profile', icon: 'person', iconOutline: 'person-outline' },
 ];
 
-// ─── Custom Tab Bar ─────────────────────────────────────────────────────────
-const CustomTabBar = ({ state, descriptors, navigation }) => {
+// ─── Custom Tab Bar (memoised) ──────────────────────────────────────────────
+const CustomTabBar = React.memo(({ state, descriptors, navigation }) => {
     const { colors } = useTheme();
     const insets = useSafeAreaInsets();
     const { cartItems } = useCart();
+    const cartCount = cartItems.length;
 
     return (
         <View style={[
@@ -36,7 +37,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             { 
                 backgroundColor: colors.tabBar, 
                 borderTopColor: colors.border,
-                paddingBottom: Math.max(insets.bottom, 12), // Add padding for system bar
+                paddingBottom: Math.max(insets.bottom, 12),
             }
         ]}>
             {state.routes.map((route, index) => {
@@ -63,9 +64,9 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                                 size={22}
                                 color={isFocused ? colors.tabActive : colors.tabInactive}
                             />
-                            {config.name === 'Cart' && cartItems.length > 0 && (
+                            {config.name === 'Cart' && cartCount > 0 && (
                                 <View style={[styles.badge, { backgroundColor: colors.accent }]}>
-                                    <Text style={styles.badgeText}>{cartItems.length}</Text>
+                                    <Text style={styles.badgeText}>{cartCount}</Text>
                                 </View>
                             )}
                             <Text
@@ -85,13 +86,14 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             })}
         </View>
     );
-};
+});
 
 // ─── Navigator ─────────────────────────────────────────────────────────────
 const BottomTabNavigator = () => (
     <Tab.Navigator
         tabBar={(props) => <CustomTabBar {...props} />}
         screenOptions={{ headerShown: false }}
+        detachInactiveScreens={true}
     >
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Cart" component={CartScreen} />

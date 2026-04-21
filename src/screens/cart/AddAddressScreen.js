@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     View, Text, StyleSheet, ScrollView,
     TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Alert,
@@ -141,7 +141,7 @@ const AddAddressScreen = ({ navigation, route }) => {
     const fieldProps = { form, errors, onUpdate: update, styles, colors };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#1A0B2E' : colors.background }]}>
             <LinearGradient
                 colors={isDark ? ['#1A0B2E', '#2E1A47'] : [colors.background, colors.surface]}
                 style={styles.gradient}
@@ -304,7 +304,7 @@ const AddAddressScreen = ({ navigation, route }) => {
 };
 
 const getStyles = (colors, isDark) => StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: colors.background },
     gradient: { flex: 1 },
     header: {
         flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

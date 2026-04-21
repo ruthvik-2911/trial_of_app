@@ -91,7 +91,6 @@ if (!getApps().length) {
     initializeAuth(app, {
         persistence: getReactNativePersistence(ReactNativeAsyncStorage),
     });
-    console.log('🔥 [RegisterScreen] Firebase initialized');
 }
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -164,7 +163,6 @@ const RegisterScreen = ({ navigation }) => {
         console.log('✅ [RegisterScreen] Firebase auth OK — UID:', firebaseUser.uid);
 
         const idToken = await firebaseUser.getIdToken();
-        console.log('✅ [RegisterScreen] idToken (first 60):', idToken.substring(0, 60) + '...');
 
         const payload = {
             idToken,
@@ -175,13 +173,8 @@ const RegisterScreen = ({ navigation }) => {
             password: formData.password || null,
         };
 
-        console.log('📤 [RegisterScreen] → AuthContext.register()');
-
-        // AuthContext.register() calls POST /auth/register,
-        // then sets uid / user / token in context + Redux + AsyncStorage.
         const result = await register(payload);
 
-        console.log('📥 [RegisterScreen] AuthContext.register() result:', JSON.stringify(result));
         return result;
     };
 
@@ -201,7 +194,6 @@ const RegisterScreen = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            console.log('🔥 [RegisterScreen] [EMAIL] Creating Firebase user...');
             const auth = getAuth();
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const result = await handleBackendRegister(userCredential);
@@ -222,7 +214,6 @@ const RegisterScreen = ({ navigation }) => {
         setIsLoading(true);
         try {
             const cleaned = formData.phone.replace(/\D/g, '');
-            console.log('🔥 [RegisterScreen] [PHONE] Sending OTP to +91' + cleaned);
             const auth = getAuth();
             const phoneProvider = new PhoneAuthProvider(auth);
 
@@ -234,7 +225,6 @@ const RegisterScreen = ({ navigation }) => {
             setConfirmationResult({ verificationId });
             setOtpStep(true);
             setIsLoading(false);
-            console.log('✅ [RegisterScreen] [PHONE] OTP sent');
             Alert.alert('OTP Sent', `A 6-digit OTP has been sent to +91${cleaned}`);
         } catch (err) {
             setIsLoading(false);
@@ -250,7 +240,6 @@ const RegisterScreen = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            console.log('🔥 [RegisterScreen] [PHONE] Verifying OTP...');
             const credential = PhoneAuthProvider.credential(confirmationResult.verificationId, otp);
             const userCredential = await signInWithCredential(getAuth(), credential);
             
@@ -268,35 +257,44 @@ const RegisterScreen = ({ navigation }) => {
     // ── 4. Google — exchange OAuth token with Firebase, then backend ────────
     // ── 4. Google — exchange OAuth token with Firebase, then backend ────────
     const handleGoogleRegister = async () => {
+        // Prevent multiple simultaneous calls
+        if (isLoading) return;
+
+        // Guard: native module not available (Expo Go)
+        if (!GoogleSignin) {
+            Alert.alert(
+                'Not Available',
+                'Google Sign-In requires a development build and cannot run in Expo Go. Please use a built APK.',
+            );
+            return;
+        }
+
         setIsLoading(true);
         try {
-            console.log('🔥 [RegisterScreen] [GOOGLE] Opening Native Google OAuth...');
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const userInfo = await GoogleSignin.signIn();
-            
+
             // Support both v13+ and older object shapes
             const idToken = userInfo.data?.idToken || userInfo.idToken;
 
             if (!idToken) throw new Error('No ID token present');
 
-            console.log('✅ [RegisterScreen] [GOOGLE] Got token — exchanging with Firebase...');
             const auth = getAuth();
             const credential = GoogleAuthProvider.credential(idToken);
             const userCredential = await signInWithCredential(auth, credential);
 
-            console.log('✅ [RegisterScreen] [GOOGLE] Firebase sign-in OK');
             const result = await handleBackendRegister(userCredential);
             setIsLoading(false);
-            
+
             if (result.success) navigateAfterRegister();
             else Alert.alert('Error', result.error || 'Google sign-up failed');
         } catch (error) {
             setIsLoading(false);
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            if (statusCodes && error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log('ℹ️ [RegisterScreen] [GOOGLE] Cancelled');
-            } else if (error.code === statusCodes.IN_PROGRESS) {
+            } else if (statusCodes && error.code === statusCodes.IN_PROGRESS) {
                 console.log('ℹ️ [RegisterScreen] [GOOGLE] In progress');
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            } else if (statusCodes && error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
                 Alert.alert('Error', 'Play services not available or outdated');
             } else {
                 console.error('❌ [RegisterScreen] [GOOGLE] Error:', error);
@@ -309,7 +307,6 @@ const RegisterScreen = ({ navigation }) => {
     const handleAppleRegister = async () => {
         setIsLoading(true);
         try {
-            console.log('🔥 [RegisterScreen] [APPLE] Requesting Apple credentials...');
             const appleCredential = await Apple.signInAsync({
                 requestedScopes: [
                     Apple.AppleAuthenticationScope.FULL_NAME,
@@ -330,7 +327,6 @@ const RegisterScreen = ({ navigation }) => {
                 ? `${fullName.givenName} ${fullName.familyName}`
                 : formData.fullName || '';
 
-            console.log('✅ [RegisterScreen] [APPLE] Firebase sign-in OK');
             const result = await handleBackendRegister(userCredential, { fullName: appleFullName });
             setIsLoading(false);
             if (result.success) navigateAfterRegister();
@@ -338,7 +334,6 @@ const RegisterScreen = ({ navigation }) => {
         } catch (err) {
             setIsLoading(false);
             if (err.code === 'ERR_CANCELED') {
-                console.log('ℹ️ [RegisterScreen] [APPLE] User cancelled');
                 return;
             }
             console.error('❌ [RegisterScreen] [APPLE]', err.code, err.message);

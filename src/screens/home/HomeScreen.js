@@ -6,7 +6,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
     View, Text, ScrollView, TouchableOpacity, StyleSheet,
     Dimensions, FlatList, StatusBar, Animated, Platform,
-    Image, RefreshControl, Modal, ImageBackground,
+    Image, RefreshControl, Modal, ImageBackground, InteractionManager,
 } from 'react-native';
 import { LinearGradient } from '../../components/SafeLinearGradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -245,6 +245,13 @@ const HProductCard = ({ item, colors, cartCount, onPress, onAddToCart, onUpdateQ
         </TouchableOpacity>
     );
 };
+// Memoize: only re-render when this card's own data changes
+const HProductCardMemo = React.memo(HProductCard, (prev, next) =>
+    prev.cartCount === next.cartCount &&
+    prev.inWishlist === next.inWishlist &&
+    prev.item.id === next.item.id &&
+    prev.colors === next.colors
+);
 
 // ─── Category chip ─────────────────────────────────────────────────────────────
 const CategoryChip = ({ item, selected, onPress, colors }) => (
@@ -308,7 +315,7 @@ const ProductSectionRow = ({ title, products, loading, colors, cartCountMap, nav
                 {loading
                     ? Array.from({ length: SKELETON_COUNT }).map((_, i) => <SkeletonHCard key={i} colors={colors} />)
                     : products.map(item => (
-                        <HProductCard
+                        <HProductCardMemo
                             key={item.id} item={item} colors={colors}
                             cartCount={cartCountMap[item.id] || 0}
                             onPress={() => navigation.navigate('ProductDetail', { productId: item.id })}
@@ -363,7 +370,7 @@ const LatestReleasesBlock = ({
                     {section.loading
                         ? Array.from({ length: 4 }).map((_, i) => <SkeletonHCard key={i} colors={colors} />)
                         : sorted.map(item => (
-                            <HProductCard
+                            <HProductCardMemo
                                 key={item.id} item={item} colors={colors}
                                 cartCount={cartCountMap[item.id] || 0}
                                 onPress={() => navigation.navigate('ProductDetail', { productId: item.id })}
@@ -469,7 +476,14 @@ const HomeScreen = ({ navigation }) => {
         if (isRefresh) setRefreshing(false);
     }, []);
 
-    useEffect(() => { fetchAllSections(); }, [fetchAllSections]);
+    useEffect(() => {
+        // Defer API fetch until after navigation animation completes —
+        // prevents JS thread from being blocked during the slide-in.
+        const task = InteractionManager.runAfterInteractions(() => {
+            fetchAllSections();
+        });
+        return () => task.cancel();
+    }, [fetchAllSections]);
 
     // ── Navigation ─────────────────────────────────────────────────────────────
     const handleCategoryPress = useCallback((cat) => {

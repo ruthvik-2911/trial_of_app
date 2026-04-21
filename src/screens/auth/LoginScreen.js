@@ -92,7 +92,6 @@ if (!getApps().length) {
     initializeAuth(app, {
         persistence: getReactNativePersistence(ReactNativeAsyncStorage),
     });
-    console.log('🔥 [LoginScreen] Firebase initialized');
 }
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -148,7 +147,6 @@ const LoginScreen = ({ navigation }) => {
         console.log('✅ [LoginScreen] Firebase auth OK — UID:', firebaseUser.uid);
 
         const idToken = await firebaseUser.getIdToken();
-        console.log('✅ [LoginScreen] idToken (first 60):', idToken.substring(0, 60) + '...');
 
         const payload = {
             idToken,
@@ -157,10 +155,6 @@ const LoginScreen = ({ navigation }) => {
             phone: firebaseUser.phoneNumber || extraPayload.phone || null,
         };
 
-        console.log('📤 [LoginScreen] → AuthContext.login()');
-
-        // AuthContext.login() calls POST /auth/login,
-        // then sets uid / user / token in context + Redux + AsyncStorage.
         const result = await login(payload);
 
         console.log('📥 [LoginScreen] AuthContext.login() result:', JSON.stringify(result));
@@ -183,7 +177,6 @@ const LoginScreen = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            console.log('🔥 [LoginScreen] [EMAIL] Signing in...');
             const auth = getAuth();
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const result = await handleBackendLogin(userCredential, { email });
@@ -204,10 +197,8 @@ const LoginScreen = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            console.log('🔥 [LoginScreen] [PHONE] Sending OTP to +91' + cleaned);
             const auth = getAuth();
             const phoneProvider = new PhoneAuthProvider(auth);
-            
             const verificationId = await phoneProvider.verifyPhoneNumber(
                 `+91${cleaned}`,
                 recaptchaVerifierRef.current
@@ -216,7 +207,6 @@ const LoginScreen = ({ navigation }) => {
             setConfirmationResult({ verificationId });
             setOtpStep(true);
             setIsLoading(false);
-            console.log('✅ [LoginScreen] [PHONE] OTP sent');
             Alert.alert('OTP Sent', `A 6-digit OTP has been sent to +91${cleaned}`);
         } catch (err) {
             setIsLoading(false);
@@ -232,7 +222,6 @@ const LoginScreen = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            console.log('🔥 [LoginScreen] [PHONE] Verifying OTP...');
             const credential = PhoneAuthProvider.credential(confirmationResult.verificationId, otp);
             const userCredential = await signInWithCredential(getAuth(), credential);
             
@@ -249,35 +238,44 @@ const LoginScreen = ({ navigation }) => {
 
     // ── 4. Google — exchange OAuth token with Firebase, then backend ────────
     const handleGoogleLogin = async () => {
+        // Prevent multiple simultaneous calls
+        if (isLoading) return;
+
+        // Guard: native module not available (Expo Go)
+        if (!GoogleSignin) {
+            Alert.alert(
+                'Not Available',
+                'Google Sign-In requires a development build and cannot run in Expo Go. Please use a built APK.',
+            );
+            return;
+        }
+
         setIsLoading(true);
         try {
-            console.log('🔥 [LoginScreen] [GOOGLE] Opening Native Google OAuth...');
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const userInfo = await GoogleSignin.signIn();
-            
+
             // Support both v13+ and older object shapes
             const idToken = userInfo.data?.idToken || userInfo.idToken;
 
             if (!idToken) throw new Error('No ID token present');
 
-            console.log('✅ [LoginScreen] [GOOGLE] Got token — exchanging with Firebase...');
             const auth = getAuth();
             const credential = GoogleAuthProvider.credential(idToken);
             const userCredential = await signInWithCredential(auth, credential);
 
-            console.log('✅ [LoginScreen] [GOOGLE] Firebase sign-in OK');
             const result = await handleBackendLogin(userCredential);
             setIsLoading(false);
-            
+
             if (result.success) navigateAfterLogin();
             else Alert.alert('Error', result.error || 'Google login failed');
         } catch (error) {
             setIsLoading(false);
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                console.log('ℹ️ [LoginScreen] [GOOGLE] Cancelled');
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-                console.log('ℹ️ [LoginScreen] [GOOGLE] In progress');
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            if (statusCodes && error.code === statusCodes.SIGN_IN_CANCELLED) {
+            console.log('ℹ️ [LoginScreen] [GOOGLE] Cancelled');
+            } else if (statusCodes && error.code === statusCodes.IN_PROGRESS) {
+            console.log('ℹ️ [LoginScreen] [GOOGLE] In progress');
+            } else if (statusCodes && error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
                 Alert.alert('Error', 'Play services not available or outdated');
             } else {
                 console.error('❌ [LoginScreen] [GOOGLE] Error:', error);
@@ -290,7 +288,6 @@ const LoginScreen = ({ navigation }) => {
     const handleAppleLogin = async () => {
         setIsLoading(true);
         try {
-            console.log('🔥 [LoginScreen] [APPLE] Requesting Apple credentials...');
             const appleCredential = await Apple.signInAsync({
                 requestedScopes: [
                     Apple.AppleAuthenticationScope.FULL_NAME,
@@ -306,7 +303,6 @@ const LoginScreen = ({ navigation }) => {
             const credential = provider.credential({ idToken: identityToken, rawNonce: nonce });
             const userCredential = await signInWithCredential(auth, credential);
 
-            console.log('✅ [LoginScreen] [APPLE] Firebase sign-in OK');
             const result = await handleBackendLogin(userCredential);
             setIsLoading(false);
             if (result.success) navigateAfterLogin();
@@ -314,7 +310,6 @@ const LoginScreen = ({ navigation }) => {
         } catch (err) {
             setIsLoading(false);
             if (err.code === 'ERR_CANCELED') {
-                console.log('ℹ️ [LoginScreen] [APPLE] User cancelled');
                 return;
             }
             console.error('❌ [LoginScreen] [APPLE]', err.code, err.message);

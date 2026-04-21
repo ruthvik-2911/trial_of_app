@@ -262,10 +262,22 @@ const ProductDetailScreen = ({ navigation, route }) => {
     // even when the item was added from HomeScreen or any other screen.
     const cartItem = React.useMemo(() => {
         if (!product) return null;
-        return cartItems.find((ci) => ci.id === product.id) || null;
+        // Match by both id and _id to handle backend shape differences
+        return cartItems.find(
+            (ci) => ci.id === product.id || ci.id === product._id
+        ) || null;
     }, [cartItems, product]);
 
-    const cartAdded = !!cartItem;
+    // Local flag — set immediately on tap so UI switches without waiting for
+    // the CartContext state to propagate through the re-render cycle.
+    const [localCartAdded, setLocalCartAdded] = React.useState(false);
+
+    // Keep localCartAdded in sync with the real CartContext value
+    React.useEffect(() => {
+        setLocalCartAdded(!!cartItem);
+    }, [cartItem]);
+
+    const cartAdded = localCartAdded || !!cartItem;
     const quantity = cartItem?.quantity || 1;
 
     const wishScale = useRef(new Animated.Value(1)).current;
@@ -410,8 +422,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
         if (!product.inStock) { Alert.alert('Out of Stock', 'This product is currently unavailable.'); return; }
 
         const colorName = product.colors?.find((c) => c.id === selectedColor)?.name || null;
+        // Set local flag immediately so the UI switches to "Go to Cart" right away
+        setLocalCartAdded(true);
         addToCart(product, 1, colorName, selectedSize);
-        // No local state needed — cartItem from CartContext auto-updates
     };
 
     const handleQuantityChange = (delta) => {
@@ -687,8 +700,9 @@ const ProductDetailScreen = ({ navigation, route }) => {
             >
                 {product.inStock ? (
                     cartAdded ? (
-                        /* ── Quantity Selector (shown once item is in cart) ── */
-                        <>
+                        /* ── Quantity Selector + Go to Cart + Buy Now ── */
+                        <View style={styles.cartAddedRow}>
+                            {/* Qty control */}
                             <View style={[styles.qtyControl, { borderColor: colors.border }]}>
                                 <TouchableOpacity
                                     style={styles.qtyBtn}
@@ -711,7 +725,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
                             {/* Go to Cart */}
                             <TouchableOpacity
-                                style={[styles.cartBtn]}
+                                style={styles.goToCartBtn}
                                 onPress={() => navigation.navigate('Main', { screen: 'Cart' })}
                             >
                                 <LinearGradient
@@ -732,7 +746,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                             >
                                 <Text style={[styles.buyNowText, { color: colors.accent }]}>Buy Now</Text>
                             </TouchableOpacity>
-                        </>
+                        </View>
                     ) : (
                         /* ── Initial: full-width Add to Cart + Buy Now ── */
                         <>
@@ -836,11 +850,19 @@ const styles = StyleSheet.create({
 
     // Sticky bar
     stickyBar: {
-        position: 'absolute', bottom: -20, left: 0, right: 0,
+        position: 'absolute', bottom: 0, left: 0, right: 0,
         flexDirection: 'row', alignItems: 'center',
         paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12,
         gap: 10, borderTopWidth: 1,
     },
+    // Row wrapper for cart-added state (qty + Go to Cart + Buy Now)
+    cartAddedRow: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    goToCartBtn: { flex: 1, borderRadius: 12, overflow: 'hidden', height: 44 },
     qtyControl: { flexDirection: 'row', alignItems: 'center', borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
     qtyBtn: { width: 34, height: 44, alignItems: 'center', justifyContent: 'center' },
     qtyValue: { fontSize: 14, fontWeight: '700', minWidth: 24, textAlign: 'center' },

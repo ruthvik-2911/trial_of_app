@@ -31,12 +31,6 @@ const CartScreen = ({ navigation }) => {
         removeFromCart,
     } = useCart();
 
-    // 🛒 DEBUG — log every time CartScreen renders so we can see what cart state it gets
-    console.log(
-        `🛒 [CartScreen] render | uid=${user?.uid ?? 'null'} | isLoading=${isLoading} | cartItems=${cartItems.length}`,
-        cartItems.map(i => ({ id: i.id, name: i.name, qty: i.quantity }))
-    );
-
     const getKey = (item) => item.id + (item.color || '');
 
     const [selectedItems, setSelectedItems] = useState({});
