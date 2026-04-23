@@ -70,7 +70,7 @@ const ProductCard = React.memo(({ item, colors, gradients, onToggleWishlist, inW
         >
             {discountPercent > 0 && inStock && (
                 <View style={[styles.badge, { backgroundColor: colors.accent }]}>
-                    <Text style={[styles.badgeText, { color: '#1A0B2E' }]}>{discountPercent}% OFF</Text>
+                    <Text style={[styles.badgeText, { color: colors.textInverse }]}>{discountPercent}% OFF</Text>
                 </View>
             )}
             
@@ -490,7 +490,7 @@ const SearchScreen = ({ navigation, route }) => {
             {/* Header */}
             <SafeAreaView edges={['top']} style={{ backgroundColor: colors.surface }}>
                 <LinearGradient 
-                    colors={isDark ? ['#1A0B2E', '#2D144A'] : ['#6366F1', '#A855F7']} 
+                    colors={isDark ? ['#4910BC', '#120430'] : ['#4910BC', '#BEA1F7']} 
                     start={{ x: 0, y: 0 }} 
                     end={{ x: 1, y: 0 }}
                     style={[styles.headerGradient]}
@@ -605,7 +605,7 @@ const SearchScreen = ({ navigation, route }) => {
                         style={[styles.clearFiltersButton, { backgroundColor: colors.accent }]}
                         onPress={() => executeSearch(searchQuery, 1, true)}
                     >
-                        <Text style={[styles.clearFiltersButtonText, { color: '#1A0B2E' }]}>Retry</Text>
+                        <Text style={[styles.clearFiltersButtonText, { color: colors.textInverse }]}>Retry</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -620,7 +620,7 @@ const SearchScreen = ({ navigation, route }) => {
                         style={[styles.clearFiltersButton, { backgroundColor: colors.accent }]}
                         onPress={clearAllFilters}
                     >
-                        <Text style={[styles.clearFiltersButtonText, { color: '#1A0B2E' }]}>Clear Filters</Text>
+                        <Text style={[styles.clearFiltersButtonText, { color: colors.textInverse }]}>Clear Filters</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
     filterButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 10, gap: 6, borderWidth: 1 },
     filterButtonText: { fontSize: 14, fontWeight: '500' },
     filterBadge: { width: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center' },
-    filterBadgeText: { color: '#1A0B2E', fontSize: 10, fontWeight: '600' },
+    filterBadgeText: { fontSize: 10, fontWeight: '600' },
     sortButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 10, gap: 6, borderWidth: 1 },
     sortButtonText: { fontSize: 14, fontWeight: '500' },
     content: { flex: 1, paddingHorizontal: 16 },

@@ -20,8 +20,8 @@ const ToastContext = createContext(null);
 const TOAST_CONFIG = {
     success: {
         icon: 'checkmark-circle',
-        gradientColors: ['#FFD700', '#FFA500'],
-        glow: '#FFD700',
+        gradientColors: ['#BEA1F7', '#9061F9'],
+        glow: '#BEA1F7',
         label: 'Success',
     },
     error: {
@@ -44,14 +44,14 @@ const TOAST_CONFIG = {
     },
     cart: {
         icon: 'bag-check',
-        gradientColors: ['#FFD700', '#FFA500'],
-        glow: '#FFD700',
+        gradientColors: ['#BEA1F7', '#9061F9'],
+        glow: '#BEA1F7',
         label: 'Cart',
     },
     confirm: {
         icon: 'help-circle',
-        gradientColors: ['#7B5EEA', '#9B72FF'],
-        glow: '#7B5EEA',
+        gradientColors: ['#4910BC', '#2E0A78'],
+        glow: '#4910BC',
         label: 'Confirm',
     },
 };
@@ -114,7 +114,7 @@ const Toast = ({ toast, onDismiss }) => {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                         >
-                            <Ionicons name={config.icon} size={22} color="#1A0B2E" />
+                            <Ionicons name={config.icon} size={22} color={config.label === 'Confirm' ? '#FFFFFF' : '#1A0444'} />
                         </LinearGradient>
                     </View>
                     <View style={toastStyles.textBlock}>
@@ -269,7 +269,7 @@ const toastStyles = StyleSheet.create({
     cancelBtnText: { fontSize: 14, fontWeight: '600' },
     confirmBtnWrap: { flex: 1, borderRadius: 10, overflow: 'hidden' },
     confirmBtn: { alignItems: 'center', paddingVertical: 10 },
-    confirmBtnText: { fontSize: 14, fontWeight: '700', color: '#1A0B2E' },
+    confirmBtnText: { fontSize: 14, fontWeight: '700', color: '#FFFFFF' },
 });
 
 export default ToastProvider;

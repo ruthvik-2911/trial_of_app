@@ -2,26 +2,26 @@
 
 export const darkColors = {
     // Backgrounds
-    background: '#0D0B1E',
-    surface: '#16132E',
-    card: '#1E1A38',
-    cardAlt: '#231F42',
+    background: '#120430', // Deepest Grape
+    surface: '#1A0640',    // Deep Grape
+    card: '#250850',       // Dark Grape
+    cardAlt: '#2E0A78',    // Mid Grape
 
     // Brand
-    primary: '#7B5EEA',
-    primaryLight: '#9B82F3',
-    primaryDark: '#5A3EC8',
+    primary: '#BEA1F7',    // Soft Violet
+    primaryLight: '#D9C9FF',
+    primaryDark: '#9061F9',
 
-    // Accent (Gold)
-    accent: '#FFD700',
-    accentLight: '#FFD96B',
-    accentDark: '#FFA500',
+    // Accent (Soft Violet - matching primary as requested)
+    accent: '#BEA1F7',
+    accentLight: '#D9C9FF',
+    accentDark: '#9061F9',
 
     // Text
     textPrimary: '#FFFFFF',
-    textSecondary: '#B8B0D8',
-    textMuted: '#6B6490',
-    textInverse: '#0D0B1E',
+    textSecondary: '#D1C4FF', // Light violet text
+    textMuted: '#8B7FB0',    // Muted violet
+    textInverse: '#120430',  // Deepest Grape
 
     // Status
     success: '#4ADE80',
@@ -30,37 +30,37 @@ export const darkColors = {
     info: '#60A5FA',
 
     // UI
-    border: '#2E2850',
-    divider: '#231F42',
-    overlay: 'rgba(13, 11, 30, 0.85)',
+    border: '#3D1588',      // Grape border
+    divider: '#250850',
+    overlay: 'rgba(18, 4, 48, 0.85)',
 
     // Tab bar
-    tabBar: '#100E22',
-    tabActive: '#FFD700',
-    tabInactive: '#4A4470',
+    tabBar: '#0D0325',
+    tabActive: '#BEA1F7',
+    tabInactive: '#6B5E99',
 };
 
 export const lightColors = {
     // Backgrounds
-    background: '#E8F4FD',
-    surface: '#F0F9FF',
+    background: '#F5F3FF', // Very light violet
+    surface: '#EDE9FE',    // Light violet surface
     card: '#FFFFFF',
-    cardAlt: '#DFF0FA',
+    cardAlt: '#F0E7FF',
 
     // Brand
-    primary: '#0EA5E9',
-    primaryLight: '#38BDF8',
-    primaryDark: '#0284C7',
+    primary: '#BEA1F7',
+    primaryLight: '#D9C9FF',
+    primaryDark: '#9061F9',
 
-    // Accent (Gold - Matching Dark Theme)
-    accent: '#FFD700',
-    accentLight: '#FFD96B',
-    accentDark: '#FFA500',
+    // Accent
+    accent: '#BEA1F7',
+    accentLight: '#D9C9FF',
+    accentDark: '#9061F9',
 
     // Text
-    textPrimary: '#0F172A',
-    textSecondary: '#475569',
-    textMuted: '#94A3B8',
+    textPrimary: '#1A0444',   // Deep Grape for text
+    textSecondary: '#4910BC', // Grape
+    textMuted: '#9086B8',
     textInverse: '#FFFFFF',
 
     // Status
@@ -70,12 +70,12 @@ export const lightColors = {
     info: '#3B82F6',
 
     // UI
-    border: '#BAE6FD',
-    divider: '#E0F2FE',
-    overlay: 'rgba(14, 165, 233, 0.1)',
+    border: '#DDD6FE',
+    divider: '#EDE9FE',
+    overlay: 'rgba(73, 16, 188, 0.1)',
 
     // Tab bar
     tabBar: '#FFFFFF',
-    tabActive: '#0EA5E9',
-    tabInactive: '#94A3B8',
-};
+    tabActive: '#4910BC', // Grape for active tab in light mode
+    tabInactive: '#9086B8',
+};

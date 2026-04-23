@@ -42,7 +42,7 @@ const H_CARD_WIDTH = width * 0.44;   // horizontal-scroll product card
 const formatPrice = (p) => `₹${Number(p).toLocaleString('en-IN')}`;
 
 // "All" chip
-const ALL_CHIP = { id: 'All', name: 'All', icon: 'apps-outline', color: '#7B5EEA' };
+const ALL_CHIP = { id: 'All', name: 'All', icon: 'apps-outline', color: '#BEA1F7' };
 
 // ─── Flash Deals ───────────────────────────────────────────────────────────────
 const FLASH_DEALS = [
@@ -233,7 +233,7 @@ const HProductCard = ({ item, colors, cartCount, onPress, onAddToCart, onUpdateQ
                     activeOpacity={0.8}
                 >
                     <LinearGradient
-                        colors={inStock ? ['#7B5EEA', '#9B7DEA'] : ['#9E9E9E', '#757575']}
+                        colors={inStock ? [colors.primary, colors.primaryDark] : ['#9E9E9E', '#757575']}
                         style={styles.hCardBtnGradient}
                         start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                     >
@@ -389,12 +389,12 @@ const LatestReleasesBlock = ({
         <View style={[styles.latestBlock, { borderColor: colors.border }]}>
             {/* ── Gradient heading banner ── */}
             <LinearGradient
-                colors={isDark ? ['#1A1035', '#0F0A1E'] : ['#F0EBFF', '#E8F4FD']}
+                colors={isDark ? ['#4910BC', '#120430'] : ['#F5F3FF', '#EDE9FE']}
                 style={styles.latestBlockHeader}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             >
                 <View style={styles.latestTitleRow}>
-                    <View style={[styles.latestIconBox, { backgroundColor: '#7B5EEA22' }]}>
+                    <View style={[styles.latestIconBox, { backgroundColor: colors.primary + '22' }]}>
                         <Text style={styles.latestEmoji}>🆕</Text>
                     </View>
                     <View>
@@ -533,7 +533,7 @@ const HomeScreen = ({ navigation }) => {
             {/* ── Fixed Header ─────────────────────────────────────────────────── */}
             <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, backgroundColor: headerBg }}>
                 <LinearGradient
-                    colors={isDark ? ['#0D0B1E', '#16132E'] : ['#FFFFFF', '#F8F9FA']}
+                    colors={isDark ? ['#120430', '#1A0640'] : ['#FFFFFF', '#F5F3FF']}
                     style={StyleSheet.absoluteFillObject}
                     start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 />
@@ -542,7 +542,7 @@ const HomeScreen = ({ navigation }) => {
                         {/* Brand row */}
                         <View style={styles.header}>
                             <View style={styles.headerLeft}>
-                                <Text style={[styles.brandName, { color: colors.accent }]}>Gudkart</Text>
+                                <Text style={[styles.brandName, { color: colors.accent }]}>Goodkart</Text>
                                 <Text style={[styles.headerSub, { color: colors.textSecondary }]}>
                                     {isLoggedIn ? `Hey ${firstName} 👋` : 'Welcome!'}
                                 </Text>
@@ -580,7 +580,7 @@ const HomeScreen = ({ navigation }) => {
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.quickFiltersRow}>
                             {[
                                 { label: "Today's Deals", emoji: '🔥', backendSortBy: 'discountPrice', backendOrder: 'desc', color: '#E53935' },
-                                { label: 'New Arrivals', emoji: '✨', backendSortBy: 'createdAt', backendOrder: 'desc', color: '#7B5EEA' },
+                                { label: 'New Arrivals', emoji: '✨', backendSortBy: 'createdAt', backendOrder: 'desc', color: '#BEA1F7' },
                                 { label: 'Trending', emoji: '📈', backendSortBy: 'rating', backendOrder: 'desc', color: '#FF9800' },
                             ].map(({ label, emoji, backendSortBy, backendOrder, color }) => (
                                 <TouchableOpacity

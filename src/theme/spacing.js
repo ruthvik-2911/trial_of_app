@@ -25,31 +25,31 @@ export const borderRadius = {
 };
 
 export const shadow = {
-    // Dark theme shadows (purple glow)
+    // Dark theme shadows (violet glow)
     dark: {
         sm: {
-            shadowColor: '#7B5EEA',
+            shadowColor: '#BEA1F7',
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.15,
             shadowRadius: 4,
             elevation: 3,
         },
         md: {
-            shadowColor: '#7B5EEA',
+            shadowColor: '#BEA1F7',
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.25,
             shadowRadius: 12,
             elevation: 8,
         },
         lg: {
-            shadowColor: '#7B5EEA',
+            shadowColor: '#BEA1F7',
             shadowOffset: { width: 0, height: 8 },
             shadowOpacity: 0.35,
             shadowRadius: 20,
             elevation: 16,
         },
         accent: {
-            shadowColor: '#FFD700',
+            shadowColor: '#BEA1F7',
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.4,
             shadowRadius: 12,
@@ -57,30 +57,31 @@ export const shadow = {
         },
     },
 
-    // Light theme shadows (blue/teal)
+    // Light theme shadows (grape)
     light: {
         sm: {
-            shadowColor: '#0EA5E9',
+            shadowColor: '#4910BC',
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.1,
             shadowRadius: 4,
             elevation: 2,
         },
         md: {
-            shadowColor: '#0EA5E9',
+            shadowColor: '#4910BC',
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.15,
             shadowRadius: 12,
             elevation: 6,
         },
         lg: {
-            shadowColor: '#0EA5E9',
+            shadowColor: '#4910BC',
             shadowOffset: { width: 0, height: 8 },
             shadowOpacity: 0.2,
             shadowRadius: 20,
             elevation: 12,
         },
     },
+
 };
 
 export const layout = {

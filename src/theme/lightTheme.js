@@ -15,17 +15,18 @@ const lightTheme = {
 
     // Gradient presets for LinearGradient
     gradients: {
-        background: ['#E8F4FD', '#F0F9FF'],
-        card: ['#FFFFFF', '#F0F9FF'],
-        primary: ['#38BDF8', '#0EA5E9'],
-        accent: ['#FFD96B', '#FFD700'],
-        deal: ['#BAE6FD', '#E0F2FE'],
-        splash: ['#E8F4FD', '#BAE6FD', '#E8F4FD'],
-        logo: ['#0EA5E9', '#FFD700'],
-        button: ['#0EA5E9', '#0284C7'],
-        accentButton: ['#FFD700', '#FFA500'],
-        header: ['#FFFFFF', '#F8F9FA'],
+        background: ['#F5F3FF', '#EDE9FE'],
+        card: ['#FFFFFF', '#EDE9FE'],
+        primary: ['#BEA1F7', '#9061F9'],
+        accent: ['#BEA1F7', '#9061F9'],
+        deal: ['#E9D5FF', '#F3E8FF'],
+        splash: ['#F5F3FF', '#BEA1F7', '#F5F3FF'],
+        logo: ['#4910BC', '#BEA1F7'],
+        button: ['#BEA1F7', '#9061F9'],
+        accentButton: ['#BEA1F7', '#9061F9'],
+        header: ['#4910BC', '#6421E0'], // Grape gradient for header
     },
+
 };
 
 export default lightTheme;

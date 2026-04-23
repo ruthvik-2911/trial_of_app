@@ -80,15 +80,15 @@ const ProductCard = React.memo(({ item, colors, onPress, displayMode, index, onT
 
         if (displayMode === 'deals') {
             return (
-                <View style={[styles.specialBadge, { backgroundColor: '#E53935' }]}>
+                <View style={[styles.specialBadge, { backgroundColor: '#9061F9' }]}>
                     <Text style={styles.specialBadgeText}>{discountPercent}% OFF</Text>
                 </View>
             );
         }
         if (displayMode === 'new') {
             return (
-                <View style={[styles.specialBadge, { backgroundColor: '#FF9800' }]}>
-                    <Text style={styles.specialBadgeText}>NEW</Text>
+                <View style={[styles.specialBadge, { backgroundColor: '#BEA1F7' }]}>
+                    <Text style={[styles.specialBadgeText, { color: '#1A0444' }]}>NEW</Text>
                 </View>
             );
         }
@@ -641,7 +641,7 @@ const CategoryScreen = ({ navigation, route }) => {
                                 activeOpacity={0.8}
                             >
                                 <Text style={[styles.tabText, {
-                                    color: active ? (isDark ? '#000' : '#000') : colors.textSecondary,
+                                    color: active ? '#1A0444' : colors.textSecondary,
                                     fontWeight: active ? '800' : '600',
                                 }]}>
                                     {sub}

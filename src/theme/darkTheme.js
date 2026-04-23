@@ -15,17 +15,18 @@ const darkTheme = {
 
     // Gradient presets for LinearGradient
     gradients: {
-        background: ['#0D0B1E', '#16132E'],
-        card: ['#1E1A38', '#231F42'],
-        primary: ['#7B5EEA', '#5A3EC8'],
-        accent: ['#FFD700', '#FFA500'],
-        deal: ['#2D1B69', '#1E1A38'],
-        splash: ['#0D0B1E', '#1A1440', '#0D0B1E'],
-        logo: ['#FFD700', '#9B82F3'],
-        button: ['#7B5EEA', '#5A3EC8'],
-        accentButton: ['#FFD700', '#FFA500'],
-        header: ['#0D0B1E', '#1A1440'],
+        background: ['#120430', '#1A0640'],
+        card: ['#1A0640', '#250850'],
+        primary: ['#BEA1F7', '#9061F9'],
+        accent: ['#BEA1F7', '#9061F9'],
+        deal: ['#4910BC', '#2E0A78'], // Grape variant
+        splash: ['#120430', '#4910BC', '#120430'],
+        logo: ['#BEA1F7', '#4910BC'],
+        button: ['#BEA1F7', '#9061F9'],
+        accentButton: ['#BEA1F7', '#9061F9'],
+        header: ['#4910BC', '#120430'],
     },
+
 };
 
 export default darkTheme;

@@ -16,8 +16,8 @@ import { CartProvider } from './src/context/CartContext';
 import { WishlistProvider } from './src/context/WishlistContext';
 
 const LoadingFallback = () => (
-    <View style={{ flex: 1, backgroundColor: '#0D0B1E', alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator color="#F5C842" size="large" />
+    <View style={{ flex: 1, backgroundColor: '#120430', alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator color="#BEA1F7" size="large" />
     </View>
 );
 
