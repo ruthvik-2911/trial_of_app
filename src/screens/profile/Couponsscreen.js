@@ -1,5 +1,5 @@
 // ─── CouponsScreen.js ──────────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // Features:
 //   • Enter coupon code manually + Apply button
@@ -42,7 +42,7 @@ const { width } = Dimensions.get('window');
 const COUPONS = [
     {
         id: 'c1',
-        code: 'GUDKART20',
+        code: 'GOODKART20',
         type: 'percent',
         value: 20,
         maxDiscount: 500,
@@ -574,7 +574,7 @@ const CouponsScreen = ({ navigation }) => {
                                     <Text style={styles.savingsBannerEmoji}>🎉</Text>
                                     <View>
                                         <Text style={styles.savingsBannerTitle}>Total Savings</Text>
-                                        <Text style={styles.savingsBannerSub}>Using Gudkart coupons</Text>
+                                        <Text style={styles.savingsBannerSub}>Using GoodKart coupons</Text>
                                     </View>
                                 </View>
                                 <Text style={[styles.savingsBannerValue, { color: '#4ADE80' }]}>

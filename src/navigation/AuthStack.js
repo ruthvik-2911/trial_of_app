@@ -1,5 +1,5 @@
 // ─── AuthStack.js ──────────────────────────────────────────────────────────
-// Gudkart — Login ↔ Register stack
+// GoodKart — Login ↔ Register stack
 
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';

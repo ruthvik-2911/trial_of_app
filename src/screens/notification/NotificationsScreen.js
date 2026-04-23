@@ -1,5 +1,5 @@
 ﻿// ─── NotificationsScreen.js ──────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // Features:
 //   • Real-time updates via NotificationContext

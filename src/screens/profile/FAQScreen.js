@@ -101,7 +101,7 @@ const FAQScreen = ({ navigation }) => {
                         <Ionicons name="help-circle" size={40} color={colors.accent} />
                         <Text style={[styles.introTitle, { color: colors.textPrimary }]}>How can we help?</Text>
                         <Text style={[styles.introSub, { color: colors.textMuted }]}>
-                            Find answers to common questions about GudKart
+                            Find answers to common questions about GoodKart
                         </Text>
                     </View>
 

@@ -188,7 +188,7 @@ export const AuthProvider = ({ children }) => {
       showToast({
         type: 'success',
         title: 'Account Created',
-        message: 'Welcome to Gudkart! Start shopping now.'
+        message: 'Welcome to GoodKart! Start shopping now.'
       });
 
       const resolvedUid = data.uid ?? data.user?.uid ?? data.user?._id ?? data.user?.id ?? null;

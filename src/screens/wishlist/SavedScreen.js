@@ -1,5 +1,5 @@
 // ─── SavedScreen.js ────────────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // Features:
 //   • Header with item count
@@ -339,7 +339,7 @@ const SavedScreen = ({ navigation }) => {
         showToast({
             type: 'cart',
             title: 'Added to Cart!',
-            message: `${item.name} added to your Gudkart bag 🛍️`,
+            message: `${item.name} added to your GoodKart bag 🛍️`,
             duration: 2800,
         });
     }, [showToast, addToCart]);
@@ -359,7 +359,7 @@ const SavedScreen = ({ navigation }) => {
         showToast({
             type: 'confirm',
             title: 'Move All to Cart?',
-            message: `Add all ${inStockCount} in-stock items to your Gudkart bag?`,
+            message: `Add all ${inStockCount} in-stock items to your GoodKart bag?`,
             confirmLabel: 'Move All 🛍️',
             cancelLabel: 'Not now',
             onConfirm: () => {

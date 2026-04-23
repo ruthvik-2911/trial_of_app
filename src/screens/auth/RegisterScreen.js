@@ -361,11 +361,13 @@ const RegisterScreen = ({ navigation }) => {
 
                             {/* ── Logo ── */}
                             <View style={styles.logoContainer}>
-                                <View style={[styles.logoCircle, { backgroundColor: colors.accent }]}>
-                                    <Text style={[styles.logoText, { color: colors.background }]}>G</Text>
-                                </View>
+                                <Image 
+                                    source={require('../../assets/icons/2 (3).png')} 
+                                    style={{ width: 80, height: 80, marginBottom: 12 }} 
+                                    resizeMode="contain" 
+                                />
                                 <Text style={[styles.brandName, { color: colors.textPrimary }]}>
-                                    Gud<Text style={{ color: colors.accent }}>kart</Text>
+                                    Good<Text style={{ color: colors.accent }}>Kart</Text>
                                 </Text>
                             </View>
 

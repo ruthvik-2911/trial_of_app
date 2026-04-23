@@ -337,7 +337,7 @@ const OrderTrackingScreen = ({ route, navigation }) => {
                             ))}
                         </View>
                     ) : order.timeline && order.timeline.length > 0 ? (
-                        // Fallback GudCart App basic timeline array
+                        // Fallback GoodKart App basic timeline array
                         <View>
                             {order.timeline.map((ev, idx) => (
                                 <View key={idx} style={styles.timelineRow}>

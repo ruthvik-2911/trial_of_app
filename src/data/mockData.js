@@ -1,4 +1,4 @@
-// ─── Gudkart Mock Data ─────────────────────────────────────────────────────
+// ─── GoodKart Mock Data ─────────────────────────────────────────────────────
 
 export const CATEGORIES = [
     { id: '1', name: 'Fashion (Men)', icon: 'shirt-outline', color: '#7B5EEA' },
@@ -176,7 +176,7 @@ export const PRODUCT_DETAIL = {
     highlights: ['40hr Battery', 'ANC Noise', 'Hi-Res Audio'],
 
     seller: {
-        name: 'GudkartLux',
+        name: 'GoodKartLux',
         rating: 4.8,
         sales: '12K+ sold',
         verified: true,

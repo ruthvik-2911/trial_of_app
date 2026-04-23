@@ -4,12 +4,12 @@
 export const FAQ_DATA = {
     customer: [
         {
-            q: 'What is GudKart?',
-            a: 'GudKart is an online marketplace where home artists and creators can sell their handmade products, and customers can discover unique handcrafted items.'
+            q: 'What is GoodKart?',
+            a: 'GoodKart is an online marketplace where home artists and creators can sell their handmade products, and customers can discover unique handcrafted items.'
         },
         {
             q: 'Are the products handmade?',
-            a: 'Yes. Most products on GudKart are handmade or created by independent home artists and small creators.'
+            a: 'Yes. Most products on GoodKart are handmade or created by independent home artists and small creators.'
         },
         {
             q: 'How do I place an order?',
@@ -43,7 +43,7 @@ export const FAQ_DATA = {
     ],
     seller: [
         {
-            q: 'Who can sell on GudKart?',
+            q: 'Who can sell on GoodKart?',
             a: 'Anyone who creates handmade products, crafts, or artistic items from home can register as a seller.'
         },
         {
@@ -77,14 +77,14 @@ export const FAQ_DATA = {
 export const POLICIES = {
     'Cancellation & Returns': {
         effectiveDate: '27 March 2026',
-        intro: 'This Cancellation & Returns Policy ("Policy") applies to purchases made on GudKart and must be read with the Terms of Use.',
+        intro: 'This Cancellation & Returns Policy ("Policy") applies to purchases made on GoodKart and must be read with the Terms of Use.',
         sections: [
             {
                 title: '1.1 Cancellation Policy',
                 content: [
                     'Before Shipment: Customers may request cancellation before the Seller marks the order as "Ready for Pickup".',
                     'After Shipment: Once shipped, cancellation may not be possible. Return/refund may apply instead.',
-                    'Platform Cancellations: GudKart may cancel orders for suspected fraud, non-availability, or pricing errors.'
+                    'Platform Cancellations: GoodKart may cancel orders for suspected fraud, non-availability, or pricing errors.'
                 ]
             },
             {
@@ -113,11 +113,11 @@ export const POLICIES = {
     },
     'Terms of Use': {
         effectiveDate: '27 March 2026',
-        intro: 'These Terms constitute a legally binding agreement between GudKart and the User.',
+        intro: 'These Terms constitute a legally binding agreement between GoodKart and the User.',
         sections: [
             {
                 title: '1.1 Overview',
-                content: 'GudKart operates as a technology and marketplace intermediary enabling Sellers and Customers to connect. We do not manufacture or own the products listed by independent sellers.'
+                content: 'GoodKart operates as a technology and marketplace intermediary enabling Sellers and Customers to connect. We do not manufacture or own the products listed by independent sellers.'
             },
             {
                 title: '1.2 User Eligibility',
@@ -135,7 +135,7 @@ export const POLICIES = {
     },
     'Privacy': {
         effectiveDate: '27 March 2026',
-        intro: 'This policy explains how GudKart collects and protects your personal data.',
+        intro: 'This policy explains how GoodKart collects and protects your personal data.',
         sections: [
             {
                 title: '1.1 Data Collection',
@@ -157,7 +157,7 @@ export const POLICIES = {
     },
     'Security': {
         effectiveDate: '27 March 2026',
-        intro: 'GudKart uses commercially reasonable security practices to protect your data.',
+        intro: 'GoodKart uses commercially reasonable security practices to protect your data.',
         sections: [
             {
                 title: '1.1 Measures',
@@ -176,7 +176,7 @@ export const POLICIES = {
 };
 
 export const CONTACT_INFO = {
-    email: 'support@gudkart.com',
+    email: 'support@goodkart.com',
     phone: '+91 1800-456-789',
     office: 'Bangalore, Karnataka, India',
     hours: '24/7 Support'

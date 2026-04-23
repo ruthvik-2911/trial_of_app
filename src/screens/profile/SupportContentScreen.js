@@ -73,7 +73,7 @@ const SupportContentScreen = ({ navigation, route }) => {
                     <View style={styles.footer}>
                         <Ionicons name="shield-checkmark" size={40} color={colors.success + '80'} />
                         <Text style={[styles.footerText, { color: colors.textMuted }]}>
-                            Your privacy and security are our top priorities at GudKart.
+                            Your privacy and security are our top priorities at GoodKart.
                         </Text>
                     </View>
                     <View style={{ height: 40 }} />

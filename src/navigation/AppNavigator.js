@@ -1,5 +1,5 @@
 // ─── AppNavigator.js ───────────────────────────────────────────────────────
-// GudKart — Expo Go compatible
+// GoodKart — Expo Go compatible
 // No mandatory login — browse freely, auth only when needed
 // ──────────────────────────────────────────────────────────────────────────
 

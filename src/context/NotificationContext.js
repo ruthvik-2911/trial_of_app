@@ -194,7 +194,7 @@ export const NotificationProvider = ({ children }) => {
     const createWelcomeNotification = (userName) => {
         // Trigger native mobile notification
         DeviceNotificationService.showAlert({
-            title: `Welcome to Gudkart, ${userName}! 🎉`,
+            title: `Welcome to GoodKart, ${userName}! 🎉`,
             body: 'Start shopping and enjoy exclusive deals!',
         });
 
@@ -202,7 +202,7 @@ export const NotificationProvider = ({ children }) => {
             type: 'account',
             icon: 'person',
             iconColor: '#FFD700',
-            title: `Welcome to Gudkart, ${userName}! 🎉`,
+            title: `Welcome to GoodKart, ${userName}! 🎉`,
             message: 'Start shopping and enjoy exclusive deals!',
             action: 'Start Shopping',
         });

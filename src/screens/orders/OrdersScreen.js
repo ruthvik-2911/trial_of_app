@@ -1,5 +1,5 @@
 ﻿// ─── OrdersScreen.js ───────────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // Features:
 //   • Filter tabs — All, Active, Delivered, Cancelled

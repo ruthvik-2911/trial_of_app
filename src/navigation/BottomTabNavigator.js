@@ -1,5 +1,5 @@
 // ─── BottomTabNavigator.js ─────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 // All 5 tabs wired: Home ✅  Explore ✅  Cart ✅  Saved ✅  Profile ✅
 
 import React from 'react';

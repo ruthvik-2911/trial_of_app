@@ -163,7 +163,7 @@ const ProfileScreen = ({ navigation }) => {
     const handleLogout = () => {
         Alert.alert(
             'Log Out',
-            'Are you sure you want to log out of Gudkart?',
+            'Are you sure you want to log out of GoodKart?',
             [
                 { text: 'Cancel', style: 'cancel' },
                 {
@@ -242,15 +242,18 @@ const ProfileScreen = ({ navigation }) => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
-                <View style={[styles.heroCircle1, { borderColor: colors.primary + '20' }]} />
-                <View style={[styles.heroCircle2, { borderColor: colors.accent + '15' }]} />
+                <Image 
+                    source={require('../../assets/icons/2 (3).png')} 
+                    style={[styles.heroBgImage, { opacity: isDark ? 0.08 : 0.05 }]} 
+                    resizeMode="contain" 
+                />
 
                 <SafeAreaView>
                     {/* Top bar */}
                     <View style={styles.heroTopBar}>
                         <Text style={[styles.screenTitle, { color: colors.textPrimary }]}>My Profile</Text>
                         <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-                            <NotificationBadge iconSize={18} iconColor={colors.textSecondary} />
+                            <NotificationBadge iconSize={24} iconColor={colors.textSecondary} />
                             {isLoggedIn && (
                                 <TouchableOpacity
                                     style={[styles.editBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -371,7 +374,7 @@ const ProfileScreen = ({ navigation }) => {
                         <MenuRow
                             icon="log-in-outline"
                             iconColor="#7B5EEA"
-                            label="Sign in to Gudkart"
+                            label="Sign in to GoodKart"
                             sublabel="View orders, saved addresses & more"
                             onPress={() => navigation.navigate('Auth', { screen: 'Login' })}
                             colors={colors}
@@ -479,9 +482,9 @@ const ProfileScreen = ({ navigation }) => {
                     <MenuRow
                         icon="information-circle-outline"
                         iconColor="#4ADE80"
-                        label="About Gudkart"
+                        label="About GoodKart"
                         sublabel="Version 1.0.0"
-                        onPress={() => Alert.alert('About', 'Gudkart v1.0.0\nYour Premium Marketplace')}
+                        onPress={() => Alert.alert('About', 'GoodKart v1.0.0\nYour Premium Marketplace')}
                         colors={colors}
                         isLast
                     />
@@ -543,7 +546,7 @@ const ProfileScreen = ({ navigation }) => {
 
                 {/* Brand footer */}
                 <View style={styles.footer}>
-                    <Text style={[styles.footerBrand, { color: colors.accent }]}>Gudkart</Text>
+                    <Text style={[styles.footerBrand, { color: colors.accent }]}>GoodKart</Text>
                     <Text style={[styles.footerTagline, { color: colors.textMuted }]}>
                         Your Premium Marketplace
                     </Text>
@@ -560,8 +563,7 @@ const styles = StyleSheet.create({
     container: { flex: 1 },
 
     heroGradient: { paddingHorizontal: 20, paddingBottom: 0 },
-    heroCircle1: { position: 'absolute', width: 220, height: 220, borderRadius: 110, borderWidth: 1, top: -60, right: -60 },
-    heroCircle2: { position: 'absolute', width: 140, height: 140, borderRadius: 70, borderWidth: 1, bottom: -30, left: -20 },
+    heroBgImage: { position: 'absolute', width: width * 0.8, height: width * 0.8, top: -width * 0.15, right: -width * 0.2 },
     heroTopBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, marginBottom: 20 },
     screenTitle: { fontSize: 22, fontWeight: '800', letterSpacing: -0.3 },
     editBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, borderWidth: 1, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7 },

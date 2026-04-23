@@ -1,5 +1,5 @@
 // ─── OrderDetailScreen.js ───────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // Connected to orderService:
 //   • Fetches order by orderId from route.params
@@ -449,7 +449,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                         </TouchableOpacity>
                         <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>Order Details</Text>
                         <TouchableOpacity
-                            onPress={() => Alert.alert('Help', 'Contact support at support@gudkart.in')}
+                            onPress={() => Alert.alert('Help', 'Contact support at support@GoodKart.in')}
                             style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                         >
                             <Ionicons name="help-circle-outline" size={20} color={colors.textSecondary} />

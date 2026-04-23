@@ -1,5 +1,5 @@
 // ─── ExploreScreen.js ──────────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // States:
 //   1. IDLE      — trending searches + browse by category grid

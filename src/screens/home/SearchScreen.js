@@ -1,5 +1,5 @@
 // ─── SearchScreen.js ─────────────────────────────────────────────────────────
-// Gudkart — real API data via productService
+// GoodKart — real API data via productService
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {

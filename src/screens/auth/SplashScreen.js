@@ -1,4 +1,4 @@
-// ─── Gudkart Splash Screen ────────────────────────────────────────────────────
+// ─── GoodKart Splash Screen ────────────────────────────────────────────────────
 //
 // Animation sequence:
 //
@@ -37,8 +37,8 @@ const ITEM_SIZE = 68;
 const ITEM_STAGGER = 120; // Tightened stagger for 12 items
 const LOGO_SIZE = 100;
 
-const BAG_IMAGE = require('../../assets/icons/logo.png');
-const LOGO_IMAGE = require('../../assets/icons/logo.png');
+const BAG_IMAGE = require('../../assets/icons/2 (3).png');
+const LOGO_IMAGE = require('../../assets/icons/2 (3).png');
 
 // Varied product emojis for Fashion, Electronics, Home, and more
 const ITEM_EMOJIS = [
@@ -67,8 +67,8 @@ const ITEM_STARTS = [
     { x: SCREEN_WIDTH * 0.50, y: SCREEN_HEIGHT * 0.48 },   // Bottom-Right
 ];
 
-const GUD_LETTERS = ['G', 'u', 'd'];
-const KART_LETTERS = ['k', 'a', 'r', 't'];
+const GOOD_LETTERS = ['G', 'o', 'o', 'd'];
+const KART_LETTERS = ['K', 'a', 'r', 't'];
 
 const makeLetter = () => ({
     opacity: new Animated.Value(0),
@@ -96,14 +96,13 @@ const SplashScreen = ({ navigation }) => {
         }))
     ).current;
 
-    const gudAnims = useRef(GUD_LETTERS.map(makeLetter)).current;
+    const goodAnims = useRef(GOOD_LETTERS.map(makeLetter)).current;
     const kartAnims = useRef(KART_LETTERS.map(makeLetter)).current;
 
     const taglineOpacity = useRef(new Animated.Value(0)).current;
     const taglineY = useRef(new Animated.Value(12)).current;
 
-    const barWidth = useRef(new Animated.Value(0)).current;
-    const barOpacity = useRef(new Animated.Value(0)).current;
+
 
     const screenOpacity = useRef(new Animated.Value(1)).current;
 
@@ -198,7 +197,7 @@ const SplashScreen = ({ navigation }) => {
 
             // 5. Text Cascade
             Animated.stagger(55, [
-                ...gudAnims.map(a => triggerLetter(a)),
+                ...goodAnims.map(a => triggerLetter(a)),
                 ...kartAnims.map(a => triggerLetter(a)),
             ]),
 
@@ -207,17 +206,8 @@ const SplashScreen = ({ navigation }) => {
                 Animated.timing(taglineY, { toValue: 0, duration: 450, useNativeDriver: true }),
             ]),
 
-            // 6. Progress bar
-            Animated.parallel([
-                Animated.timing(barOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
-                Animated.timing(barWidth, { toValue: 1, duration: 1300, useNativeDriver: false }),
-            ]),
-
-            Animated.delay(600),
-
-            // Total Fade Out
+            // 6. Total Fade Out
             Animated.timing(screenOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
-
         ]).start(async () => {
             try {
                 const hasLaunched = await AsyncStorage.getItem('hasLaunched');
@@ -229,7 +219,6 @@ const SplashScreen = ({ navigation }) => {
         });
     }, []);
 
-    const barWidthInterp = barWidth.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] });
     const bagRotation = bagRotate.interpolate({ inputRange: [-1, 0, 1], outputRange: ['-10deg', '0deg', '10deg'] });
 
     return (
@@ -258,22 +247,16 @@ const SplashScreen = ({ navigation }) => {
                 <View style={styles.frontGroup} pointerEvents="none">
                     <Animated.Image source={LOGO_IMAGE} style={[styles.logo, { opacity: logoOpacity, transform: [{ scale: logoScale }] }]} resizeMode="contain" />
                     <View style={styles.row}>
-                        {GUD_LETTERS.map((l, i) => (
-                            <Animated.Text key={i} style={[styles.letter, styles.white, { opacity: gudAnims[i].opacity, transform: [{ translateY: gudAnims[i].y }] }]}>{l}</Animated.Text>
+                        {GOOD_LETTERS.map((l, i) => (
+                            <Animated.Text key={i} style={[styles.letter, styles.white, { opacity: goodAnims[i].opacity, transform: [{ translateY: goodAnims[i].y }] }]}>{l}</Animated.Text>
                         ))}
                         {KART_LETTERS.map((l, i) => (
                             <Animated.Text key={i} style={[styles.letter, styles.yellow, { opacity: kartAnims[i].opacity, transform: [{ translateY: kartAnims[i].y }] }]}>{l}</Animated.Text>
                         ))}
                     </View>
-                    <Animated.Text style={[styles.tag, { opacity: taglineOpacity, transform: [{ translateY: taglineY }] }]}>Gud Deals. Gud Life</Animated.Text>
+                    <Animated.Text style={[styles.tag, { opacity: taglineOpacity, transform: [{ translateY: taglineY }] }]}>Good Deals. Good Life</Animated.Text>
                 </View>
             </View>
-
-            <Animated.View style={[styles.barContainer, { opacity: barOpacity }]}>
-                <View style={styles.track}>
-                    <Animated.View style={[styles.fill, { width: barWidthInterp }]} />
-                </View>
-            </Animated.View>
         </Animated.View>
     );
 };
@@ -293,9 +276,6 @@ const styles = StyleSheet.create({
     white: { color: '#FFF' },
     yellow: { color: YELLOW },
     tag: { fontSize: 13, color: '#888', marginTop: 6, letterSpacing: 1 },
-    barContainer: { position: 'absolute', bottom: 60, width: '100%', alignItems: 'center' },
-    track: { width: 140, height: 2, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' },
-    fill: { height: '100%', backgroundColor: YELLOW },
 });
 
 export default SplashScreen;

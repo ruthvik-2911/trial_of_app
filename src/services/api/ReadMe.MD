@@ -1,6 +1,6 @@
-# GudCart API Services
+# GoodKart API Services
 
-Complete API service layer for the GudCart e-commerce application.
+Complete API service layer for the GoodKart e-commerce application.
 
 ## 📁 File Structure
 

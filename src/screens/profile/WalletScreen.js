@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -55,7 +55,7 @@ const WalletScreen = ({ navigation }) => {
                 >
                     <Ionicons name="arrow-back" size={20} color={colors.textPrimary} />
                 </TouchableOpacity>
-                <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>GudCart Wallet</Text>
+                <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>GoodKart Wallet</Text>
                 <View style={{ width: 40 }} />
             </SafeAreaView>
 
@@ -80,7 +80,7 @@ const WalletScreen = ({ navigation }) => {
                         <Text style={styles.balanceAmount}>₹2,840.50</Text>
                         <View style={styles.cardFooter}>
                             <View>
-                                <Text style={styles.cardSubTitle}>GudCart Coins</Text>
+                                <Text style={styles.cardSubTitle}>GoodKart Coins</Text>
                                 <Text style={styles.cardValue}>1,420 GC</Text>
                             </View>
                             <TouchableOpacity style={styles.addMoneyBtn}>
@@ -112,7 +112,7 @@ const WalletScreen = ({ navigation }) => {
                     >
                         <View style={styles.referralTextContainer}>
                             <Text style={styles.referralTitle}>Invite & Earn ₹500</Text>
-                            <Text style={styles.referralSub}>Share GudCart with your friends</Text>
+                            <Text style={styles.referralSub}>Share GoodKart with your friends</Text>
                         </View>
                         <View style={styles.referralIconBox}>
                             <Ionicons name="gift" size={32} color="#FFF" />

@@ -1,5 +1,5 @@
 // ─── OnboardingScreen.js ───────────────────────────────────────────────────
-// Gudkart — Expo Go compatible
+// GoodKart — Expo Go compatible
 //
 // 3 slides — full-screen horizontal swiper using FlatList + pagingEnabled
 //
@@ -179,7 +179,7 @@ const LuxuryIllustration = ({ accent }) => {
             <Animated.View style={[styles.centreCircle, { borderColor: accent + '60', transform: [{ scale }] }]}>
                 <LinearGradient colors={['#231F42', '#16132E']} style={styles.centreGradient}>
                     <Image
-                        source={require('../../assets/icons/logo.png')}
+                        source={require('../../assets/icons/2 (3).png')}
                         style={styles.centreLogo}
                         resizeMode="contain"
                     />

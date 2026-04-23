@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "GudCart",
-    "slug": "gudcart",
+    "name": "GoodKart",
+    "slug": "goodkart",
     "version": "1.0.0",
-    "scheme": "gudcart",
+    "scheme": "goodkart",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,

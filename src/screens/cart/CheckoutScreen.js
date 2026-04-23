@@ -228,11 +228,11 @@ const CheckoutScreen = ({ navigation, route }) => {
 
                     const options = {
                         description: 'Order Payment',
-                        image: 'https://gudkart.com/logo.png', // Fallback logo
+                        image: 'https://GoodKart.com/logo.png', // Fallback logo
                         currency: orderResp.order.currency,
                         key: orderResp.key_id,
                         amount: orderResp.order.amount,
-                        name: 'GudKart',
+                        name: 'GoodKart',
                         order_id: orderResp.order.id,
                         prefill: {
                             email: user.email,
@@ -629,9 +629,9 @@ const CheckoutScreen = ({ navigation, route }) => {
                                 <Text style={[styles.totalValue, { color: '#1D72E8' }]}>₹{total.toLocaleString('en-IN')}</Text>
                             </View>
 
-                            {/* Save with Gudkart Premium */}
+                            {/* Save with GoodKart Premium */}
                             <TouchableOpacity activeOpacity={0.8} style={styles.premiumBadge}>
-                                <Text style={styles.premiumText}>SAVE WITH GUDKART PREMIUM</Text>
+                                <Text style={styles.premiumText}>SAVE WITH GOODKART PREMIUM</Text>
                             </TouchableOpacity>
                         </View>
 

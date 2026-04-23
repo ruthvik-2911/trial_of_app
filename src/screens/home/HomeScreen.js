@@ -6,7 +6,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
     View, Text, ScrollView, TouchableOpacity, StyleSheet,
     Dimensions, FlatList, StatusBar, Animated, Platform,
-    Image, RefreshControl, Modal, ImageBackground, InteractionManager,
+    Image, RefreshControl, Modal, ImageBackground, InteractionManager, Linking,
 } from 'react-native';
 import { LinearGradient } from '../../components/SafeLinearGradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -435,6 +435,15 @@ const HomeScreen = ({ navigation }) => {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [headerHeight, setHeaderHeight] = useState(0);
 
+    // Animation for "Go to Seller" button
+    const sellerScale = useRef(new Animated.Value(1)).current;
+    const handleSellerPressIn = () => {
+        Animated.spring(sellerScale, { toValue: 0.96, useNativeDriver: true }).start();
+    };
+    const handleSellerPressOut = () => {
+        Animated.spring(sellerScale, { toValue: 1, friction: 4, tension: 40, useNativeDriver: true }).start();
+    };
+
     const cartCountMap = useMemo(() =>
         cartItems.reduce((acc, item) => {
             acc[item.id] = (acc[item.id] || 0) + (item.quantity || 1);
@@ -542,24 +551,34 @@ const HomeScreen = ({ navigation }) => {
                         {/* Brand row */}
                         <View style={styles.header}>
                             <View style={styles.headerLeft}>
-                                <Text style={[styles.brandName, { color: colors.accent }]}>Goodkart</Text>
-                                <Text style={[styles.headerSub, { color: colors.textSecondary }]}>
-                                    {isLoggedIn ? `Hey ${firstName} 👋` : 'Welcome!'}
-                                </Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                    <Image 
+                                        source={require('../../assets/icons/2 (3).png')} 
+                                        style={{ width: 56, height: 56 }} 
+                                        resizeMode="contain" 
+                                    />
+                                    <View>
+                                        <Text style={[styles.brandName, { color: colors.accent, fontSize: 22, lineHeight: 24, fontWeight: '900' }]}>GoodKart</Text>
+                                        <Text style={[styles.headerSub, { color: colors.textSecondary, marginTop: 0 }]}>
+                                            {isLoggedIn ? `Hey ${firstName} 👋` : 'Welcome!'}
+                                        </Text>
+                                    </View>
+                                </View>
                             </View>
-                            <View style={styles.headerRight}>
-                                <NotificationBadge iconSize={20} iconColor={colors.textSecondary} />
-                                <TouchableOpacity
-                                    style={[styles.headerBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-                                    onPress={() => navigation.navigate('Main', { screen: 'Cart' })}
-                                >
-                                    <Ionicons name="bag-outline" size={20} color={colors.textSecondary} />
-                                    {totalCartItems > 0 && (
-                                        <View style={[styles.headerBadge, { backgroundColor: colors.accent }]}>
-                                            <Text style={styles.headerBadgeText}>{totalCartItems > 9 ? '9+' : totalCartItems}</Text>
-                                        </View>
-                                    )}
-                                </TouchableOpacity>
+                            <View style={[styles.headerRight, { gap: 12 }]}>
+                                <Animated.View style={{ transform: [{ scale: sellerScale }] }}>
+                                    <TouchableOpacity
+                                        style={[styles.sellerBtn, { backgroundColor: colors.accent + '12', borderColor: colors.accent + '40' }]}
+                                        onPress={() => Linking.openURL('https://sellsathifrontend.onrender.com/#/seller')}
+                                        onPressIn={handleSellerPressIn}
+                                        onPressOut={handleSellerPressOut}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Ionicons name="storefront-outline" size={14} color={colors.accent} style={{ marginRight: 6 }} />
+                                        <Text style={[styles.sellerBtnText, { color: colors.accent }]}>Go to Seller</Text>
+                                    </TouchableOpacity>
+                                </Animated.View>
+                                <NotificationBadge iconSize={22} iconColor={colors.textSecondary} />
                             </View>
                         </View>
 
@@ -760,6 +779,8 @@ const styles = StyleSheet.create({
     headerSub: { fontSize: 12, marginTop: 1 },
     headerRight: { flexDirection: 'row', gap: 10, alignItems: 'center' },
     headerBtn: { width: 38, height: 38, borderRadius: 19, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+    sellerBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, borderWidth: 1.2 },
+    sellerBtnText: { fontSize: 12, fontWeight: '700' },
     headerBadge: { position: 'absolute', top: -4, right: -4, minWidth: 16, height: 16, borderRadius: 8, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
     headerBadgeText: { fontSize: 9, fontWeight: '800', color: '#fff' },
 
