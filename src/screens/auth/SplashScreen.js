@@ -67,7 +67,7 @@ const ITEM_STARTS = [
     { x: SCREEN_WIDTH * 0.50, y: SCREEN_HEIGHT * 0.48 },   // Bottom-Right
 ];
 
-const GUD_LETTERS = ['G', 'u', 'd'];
+const GUD_LETTERS = ['G', 'o', 'o', 'd'];
 const KART_LETTERS = ['k', 'a', 'r', 't'];
 
 const makeLetter = () => ({
@@ -102,8 +102,7 @@ const SplashScreen = ({ navigation }) => {
     const taglineOpacity = useRef(new Animated.Value(0)).current;
     const taglineY = useRef(new Animated.Value(12)).current;
 
-    const barWidth = useRef(new Animated.Value(0)).current;
-    const barOpacity = useRef(new Animated.Value(0)).current;
+
 
     const screenOpacity = useRef(new Animated.Value(1)).current;
 
@@ -207,12 +206,6 @@ const SplashScreen = ({ navigation }) => {
                 Animated.timing(taglineY, { toValue: 0, duration: 450, useNativeDriver: true }),
             ]),
 
-            // 6. Progress bar
-            Animated.parallel([
-                Animated.timing(barOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
-                Animated.timing(barWidth, { toValue: 1, duration: 1300, useNativeDriver: false }),
-            ]),
-
             Animated.delay(600),
 
             // Total Fade Out
@@ -229,7 +222,6 @@ const SplashScreen = ({ navigation }) => {
         });
     }, []);
 
-    const barWidthInterp = barWidth.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] });
     const bagRotation = bagRotate.interpolate({ inputRange: [-1, 0, 1], outputRange: ['-10deg', '0deg', '10deg'] });
 
     return (
@@ -265,15 +257,11 @@ const SplashScreen = ({ navigation }) => {
                             <Animated.Text key={i} style={[styles.letter, styles.yellow, { opacity: kartAnims[i].opacity, transform: [{ translateY: kartAnims[i].y }] }]}>{l}</Animated.Text>
                         ))}
                     </View>
-                    <Animated.Text style={[styles.tag, { opacity: taglineOpacity, transform: [{ translateY: taglineY }] }]}>Gud Deals. Gud Life</Animated.Text>
+                    <Animated.Text style={[styles.tag, { opacity: taglineOpacity, transform: [{ translateY: taglineY }] }]}>Good Deals, Good Life</Animated.Text>
                 </View>
             </View>
 
-            <Animated.View style={[styles.barContainer, { opacity: barOpacity }]}>
-                <View style={styles.track}>
-                    <Animated.View style={[styles.fill, { width: barWidthInterp }]} />
-                </View>
-            </Animated.View>
+
         </Animated.View>
     );
 };
