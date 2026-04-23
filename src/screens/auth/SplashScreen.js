@@ -29,8 +29,8 @@ import { LinearGradient } from '../../components/SafeLinearGradient';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const PURPLE = '#7B5EA7';
-const YELLOW = '#F5A800';
+const VIOLET_LIGHT = '#BEA1F7'; // Light Violet from logo
+const VIOLET_DEEP = '#4910BC';  // Deep Grape from logo
 
 const BAG_START_SIZE = 220;
 const ITEM_SIZE = 68;
@@ -101,8 +101,6 @@ const SplashScreen = ({ navigation }) => {
 
     const taglineOpacity = useRef(new Animated.Value(0)).current;
     const taglineY = useRef(new Animated.Value(12)).current;
-
-
 
     const screenOpacity = useRef(new Animated.Value(1)).current;
 
@@ -248,10 +246,10 @@ const SplashScreen = ({ navigation }) => {
                     <Animated.Image source={LOGO_IMAGE} style={[styles.logo, { opacity: logoOpacity, transform: [{ scale: logoScale }] }]} resizeMode="contain" />
                     <View style={styles.row}>
                         {GOOD_LETTERS.map((l, i) => (
-                            <Animated.Text key={i} style={[styles.letter, styles.white, { opacity: goodAnims[i].opacity, transform: [{ translateY: goodAnims[i].y }] }]}>{l}</Animated.Text>
+                            <Animated.Text key={i} style={[styles.letter, { color: VIOLET_LIGHT }, { opacity: goodAnims[i].opacity, transform: [{ translateY: goodAnims[i].y }] }]}>{l}</Animated.Text>
                         ))}
                         {KART_LETTERS.map((l, i) => (
-                            <Animated.Text key={i} style={[styles.letter, styles.yellow, { opacity: kartAnims[i].opacity, transform: [{ translateY: kartAnims[i].y }] }]}>{l}</Animated.Text>
+                            <Animated.Text key={i} style={[styles.letter, { color: VIOLET_DEEP }, { opacity: kartAnims[i].opacity, transform: [{ translateY: kartAnims[i].y }] }]}>{l}</Animated.Text>
                         ))}
                     </View>
                     <Animated.Text style={[styles.tag, { opacity: taglineOpacity, transform: [{ translateY: taglineY }] }]}>Good Deals. Good Life</Animated.Text>
@@ -263,7 +261,7 @@ const SplashScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#080612' },
-    ambientGlow: { position: 'absolute', width: 340, height: 340, borderRadius: 170, backgroundColor: PURPLE, opacity: 0.12, top: '35%', alignSelf: 'center' },
+    ambientGlow: { position: 'absolute', width: 340, height: 340, borderRadius: 170, backgroundColor: VIOLET_DEEP, opacity: 0.12, top: '35%', alignSelf: 'center' },
     center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
     bagBox: { width: BAG_START_SIZE, height: BAG_START_SIZE, justifyContent: 'center', alignItems: 'center' },
     fullImage: { width: '100%', height: '100%' },
@@ -273,9 +271,7 @@ const styles = StyleSheet.create({
     logo: { width: LOGO_SIZE, height: LOGO_SIZE },
     row: { flexDirection: 'row', marginTop: 15 },
     letter: { fontSize: 44, fontWeight: '900' },
-    white: { color: '#FFF' },
-    yellow: { color: YELLOW },
-    tag: { fontSize: 13, color: '#888', marginTop: 6, letterSpacing: 1 },
+    tag: { fontSize: 13, color: '#BEA1F7', marginTop: 6, letterSpacing: 1, opacity: 0.7 },
 });
 
 export default SplashScreen;

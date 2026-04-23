@@ -1,4 +1,4 @@
-﻿// ─── OrdersScreen.js ───────────────────────────────────────────────────────
+// ─── OrdersScreen.js ───────────────────────────────────────────────────────
 // GoodKart — Expo Go compatible
 //
 // Features:
@@ -446,7 +446,14 @@ const OrdersScreen = ({ navigation }) => {
 
     useEffect(() => {
         fetchOrders();
-    }, [fetchOrders]);
+
+        // Refresh when screen comes into focus (e.g. returning from Detail screen)
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchOrders(true); // silent refresh
+        });
+
+        return unsubscribe;
+    }, [fetchOrders, navigation]);
 
     // ── Cancel order ────────────────────────────────────────────────────────
     const handleCancel = async (orderId) => {

@@ -273,9 +273,21 @@ const OrderDetailScreen = ({ route, navigation }) => {
                         setCancellingOrder(true);
                         try {
                             await orderService.cancelOrder(order.id, 'Cancelled by user');
-                            setOrder((prev) => ({ ...prev, status: 'cancelled', statusLabel: 'Cancelled', canCancel: false }));
+                            
+                            // 1. Immediate UI update (Optimistic)
+                            setOrder((prev) => ({ 
+                                ...prev, 
+                                status: 'cancelled', 
+                                statusLabel: 'Cancelled', 
+                                canCancel: false 
+                            }));
+
+                            // 2. Refresh from server to get updated timeline/details
+                            await fetchOrder(true);
+                            
                             Alert.alert('Cancelled', 'Your order has been cancelled successfully.');
-                        } catch {
+                        } catch (err) {
+                            console.error('Cancel Error:', err);
                             Alert.alert('Error', 'Failed to cancel the order. Please try again.');
                         } finally {
                             setCancellingOrder(false);
