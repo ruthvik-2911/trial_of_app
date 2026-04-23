@@ -15,6 +15,7 @@ import orderService from '../../services/api/orderService';
 import addressService from '../../services/api/addressService.js';
 import paymentService from '../../services/api/paymentService'; // New service
 import RazorpayCheckout from 'react-native-razorpay';
+import ENV from '../../config/env';
 
 const CheckoutScreen = ({ navigation, route }) => {
     const { colors, gradients, isDark } = useTheme();
@@ -228,9 +229,9 @@ const CheckoutScreen = ({ navigation, route }) => {
 
                     const options = {
                         description: 'Order Payment',
-                        image: 'https://GoodKart.com/logo.png', // Fallback logo
+                        image: 'https://i.ibb.co/VWVXz9Z/logo.png', // Corrected logo link for sheet
                         currency: orderResp.order.currency,
-                        key: orderResp.key_id,
+                        key: orderResp.key_id || ENV.RAZORPAY_KEY_ID,
                         amount: orderResp.order.amount,
                         name: 'GoodKart',
                         order_id: orderResp.order.id,
