@@ -541,19 +541,20 @@ const HomeScreen = ({ navigation }) => {
                     <View style={{ paddingBottom: 8 }}>
                         {/* Brand row */}
                         <View style={styles.header}>
-                            <View style={styles.headerLeft}>
-                                <Text style={[styles.brandName, { color: colors.accent }]}>Goodkart</Text>
-                                <Text style={[styles.headerSub, { color: colors.textSecondary }]}>
-                                    {isLoggedIn ? `Hey ${firstName} 👋` : 'Welcome!'}
-                                </Text>
+                            <View style={[styles.headerLeft, { flexDirection: 'row', alignItems: 'center', flex: 1 }]}>
+                                <Image source={require('../../assets/images/logo(2).png')} style={{ width: 54, height: 54, marginRight: 8, resizeMode: 'contain' }} />
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Text style={[styles.brandName, { color: colors.accent, fontSize: 22, lineHeight: 26 }]}>Goodkart</Text>
+                                    <Text style={{ color: colors.textSecondary, fontSize: 11, marginTop: -2, fontWeight: '500' }}>Good Deals, Good Life</Text>
+                                </View>
                             </View>
                             <View style={styles.headerRight}>
-                                <NotificationBadge iconSize={20} iconColor={colors.textSecondary} />
+                                <NotificationBadge iconSize={24} iconColor={colors.textSecondary} />
                                 <TouchableOpacity
-                                    style={[styles.headerBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                                    style={[styles.headerBtn, { backgroundColor: colors.card, borderColor: colors.border, width: 42, height: 42, borderRadius: 21 }]}
                                     onPress={() => navigation.navigate('Main', { screen: 'Cart' })}
                                 >
-                                    <Ionicons name="bag-outline" size={20} color={colors.textSecondary} />
+                                    <Ionicons name="bag-outline" size={22} color={colors.textSecondary} />
                                     {totalCartItems > 0 && (
                                         <View style={[styles.headerBadge, { backgroundColor: colors.accent }]}>
                                             <Text style={styles.headerBadgeText}>{totalCartItems > 9 ? '9+' : totalCartItems}</Text>
@@ -561,6 +562,13 @@ const HomeScreen = ({ navigation }) => {
                                     )}
                                 </TouchableOpacity>
                             </View>
+                        </View>
+
+                        {/* Welcome Text Row */}
+                        <View style={{ paddingHorizontal: 16, marginBottom: 12, marginTop: 4 }}>
+                            <Text style={{ color: colors.textPrimary, fontSize: 16, fontWeight: '600' }}>
+                                {isLoggedIn ? `Hey ${firstName} 👋` : 'Welcome!'}
+                            </Text>
                         </View>
 
                         {/* Search bar */}
