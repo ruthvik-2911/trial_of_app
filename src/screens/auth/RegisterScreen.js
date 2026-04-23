@@ -13,6 +13,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
     View,
     Text,
+    Image,
     TextInput,
     TouchableOpacity,
     StyleSheet,
