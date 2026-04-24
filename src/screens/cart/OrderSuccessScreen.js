@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
     View,
     Text,
@@ -19,6 +19,7 @@ const OrderSuccessScreen = ({ navigation, route }) => {
     const {
         orderId = '#ORD' + Date.now().toString().slice(-8),
         total = '0',
+        rawTotal = 0,
         items = 0,
     } = route.params || {};
 
@@ -41,8 +42,13 @@ const OrderSuccessScreen = ({ navigation, route }) => {
         navigation.navigate('Main', { screen: 'Home' });
     };
 
+    // ── Pass the new order's details so OrdersScreen can show an
+    //    instant placeholder card while it waits for the API.
     const handleTrack = () => {
-        navigation.navigate('Orders');
+        navigation.navigate('Orders', {
+            fromCheckout: true,
+            newOrder: { orderId, total: rawTotal || Number(String(total).replace(/,/g, '')) || 0, items },
+        });
     };
 
     return (

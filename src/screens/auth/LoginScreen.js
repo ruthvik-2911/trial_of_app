@@ -204,7 +204,7 @@ const LoginScreen = ({ navigation }) => {
                 `+91${cleaned}`,
                 recaptchaVerifierRef.current
             );
-            
+
             setConfirmationResult({ verificationId });
             setOtpStep(true);
             setIsLoading(false);
@@ -225,7 +225,7 @@ const LoginScreen = ({ navigation }) => {
         try {
             const credential = PhoneAuthProvider.credential(confirmationResult.verificationId, otp);
             const userCredential = await signInWithCredential(getAuth(), credential);
-            
+
             const result = await handleBackendLogin(userCredential, { phone: `+91${phone}` });
             setIsLoading(false);
             if (result.success) navigateAfterLogin();
@@ -273,9 +273,9 @@ const LoginScreen = ({ navigation }) => {
         } catch (error) {
             setIsLoading(false);
             if (statusCodes && error.code === statusCodes.SIGN_IN_CANCELLED) {
-            console.log('ℹ️ [LoginScreen] [GOOGLE] Cancelled');
+                console.log('ℹ️ [LoginScreen] [GOOGLE] Cancelled');
             } else if (statusCodes && error.code === statusCodes.IN_PROGRESS) {
-            console.log('ℹ️ [LoginScreen] [GOOGLE] In progress');
+                console.log('ℹ️ [LoginScreen] [GOOGLE] In progress');
             } else if (statusCodes && error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
                 Alert.alert('Error', 'Play services not available or outdated');
             } else {
@@ -328,10 +328,10 @@ const LoginScreen = ({ navigation }) => {
 
                             {/* ── Logo ── */}
                             <View style={styles.logoContainer}>
-                                <Image 
-                                    source={require('../../assets/icons/2 (3).png')} 
-                                    style={{ width: 80, height: 80, marginBottom: 12 }} 
-                                    resizeMode="contain" 
+                                <Image
+                                    source={require('../../assets/icons/2 (3).png')}
+                                    style={{ width: 240, height: 180, marginBottom: -20 }}
+                                    resizeMode="contain"
                                 />
                                 <Text style={[styles.brandName, { color: colors.textPrimary }]}>
                                     Good<Text style={{ color: colors.accent }}>Kart</Text>

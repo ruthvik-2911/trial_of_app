@@ -300,6 +300,7 @@ const CheckoutScreen = ({ navigation, route }) => {
         navigation.replace('OrderSuccess', {
             orderId: response?.orderId || '#ORD' + Date.now().toString().slice(-8),
             total: total.toLocaleString(),
+            rawTotal: total,
             items: itemCount,
         });
     };

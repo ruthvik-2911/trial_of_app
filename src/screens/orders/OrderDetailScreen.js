@@ -97,11 +97,11 @@ const normaliseOrder = (raw) => {
     const items = (o.items ?? []).map((item) => ({
         id: item._id ?? item.id ?? item.productId ?? '',
         productId: item.productId ?? item._id ?? item.id ?? '',
-        name: item.name ?? item.productName ?? 'Product',
-        image: item.imageUrl ?? item.image ?? item.images?.[0] ?? null,
+        name: item.name ?? item.title ?? item.productName ?? item.product?.name ?? 'Product',
+        image: item.imageUrl ?? item.image ?? item.images?.[0] ?? item.product?.image ?? item.product?.imageUrl ?? null,
         emoji: item.emoji ?? '📦',
         qty: Number(item.qty ?? item.quantity ?? 1),
-        price: Number(item.price ?? item.unitPrice ?? 0),
+        price: Number(item.price ?? item.unitPrice ?? item.product?.price ?? 0),
         variant: item.variant ?? item.color ?? item.size ?? null,
         seller: item.seller ?? item.sellerName ?? null,
         desc: item.desc ?? item.description ?? '',
@@ -119,11 +119,16 @@ const normaliseOrder = (raw) => {
         date: formatDate(o.createdAt ?? o.date),
         status: (() => {
             const s = (o.status ?? '').toLowerCase();
-            if (['cancelled', 'canceled'].includes(s)) return 'cancelled';
+            const isCancelled = ['cancelled', 'canceled', 'reject', 'rejected'].includes(s) || 
+                              o.isCancelled === true || 
+                              !!o.cancelledAt || 
+                              !!o.cancellationReason;
+            
+            if (isCancelled) return 'cancelled';
             if (s === 'delivered') return 'delivered';
             return 'active';
         })(),
-        statusLabel: o.statusLabel ?? o.status ?? '',
+        statusLabel: o.statusLabel || o.status || '',
         items,
         itemTotal,
         total,

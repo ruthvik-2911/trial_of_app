@@ -362,14 +362,15 @@ const RegisterScreen = ({ navigation }) => {
 
                             {/* ── Logo ── */}
                             <View style={styles.logoContainer}>
-                                <Image 
-                                    source={require('../../assets/icons/2 (3).png')} 
-                                    style={{ width: 80, height: 80, marginBottom: 12 }} 
-                                    resizeMode="contain" 
+                                <Image
+                                    source={require('../../assets/icons/2 (3).png')}
+                                    style={{ width: 240, height: 180, marginBottom: -20 }}
+                                    resizeMode="contain"
                                 />
                                 <Text style={[styles.brandName, { color: colors.textPrimary }]}>
                                     Good<Text style={{ color: colors.accent }}>Kart</Text>
                                 </Text>
+                                <Text style={[styles.tagline, { color: colors.textSecondary }]}>Your Trusted Marketplace</Text>
                             </View>
 
                             {/* ── Welcome ── */}
@@ -659,13 +660,14 @@ const styles = StyleSheet.create({
     keyboardView: { flex: 1 },
     scrollContent: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
 
-    header: { paddingTop: 20, marginBottom: 20 },
+    header: { paddingTop: 0, marginBottom: 4 },
     backButton: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
 
-    logoContainer: { alignItems: 'center', marginBottom: 24 },
+    logoContainer: { alignItems: 'center', marginBottom: 12 },
     logoCircle: { width: 70, height: 70, borderRadius: 35, justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
     logoText: { fontSize: 36, fontWeight: 'bold' },
     brandName: { fontSize: 28, fontWeight: 'bold' },
+    tagline: { fontSize: 14 },
 
     welcomeContainer: { marginBottom: 20 },
     welcomeText: { fontSize: 26, fontWeight: 'bold', marginBottom: 8 },

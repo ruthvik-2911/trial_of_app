@@ -53,7 +53,10 @@ const orderService = {
      */
     getUserOrders: async (uid, params = {}) => {
         try {
-            const response = await apiClient.get(`/orders/user/${uid}`, { params });
+            // Add cache-buster to ensure we get the latest orders
+            const response = await apiClient.get(`/orders/user/${uid}`, { 
+                params: { ...params, _t: Date.now() } 
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching user orders:', error);

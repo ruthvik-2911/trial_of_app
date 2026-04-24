@@ -14,9 +14,12 @@ const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 // Create axios instance with default config
 const apiClient = axios.create({
     baseURL: BASE_URL,
-    timeout: 60000, // 30s per attempt is plenty; retries handle cold-start delays
+    timeout: 60000, 
     headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
     },
 });
 

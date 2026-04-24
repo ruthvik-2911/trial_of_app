@@ -14,9 +14,28 @@
 //   • Loading skeleton + error + pull-to-refresh
 //   • Cancel order with confirmation
 //   • Navigate to OrderDetailScreen on card/detail press
+//
+// ── BUG FIX (real-time order visibility) ─────────────────────────────────────
+//   ROOT CAUSE: Two independent async fetch paths existed:
+//     1. useFocusEffect → inline poll() function
+//     2. fetchOrders useCallback
+//   On fresh focus, `loading = true` hid the FlatList behind a skeleton.
+//   The poll() would call setOrders() correctly but the loading guard meant
+//   the list only appeared once setLoading(false) flushed — causing a race
+//   where the new order appeared to be missing until an action (cancel/reorder)
+//   called fetchOrders(silent=true) which skipped setLoading(true) and let
+//   the FlatList re-render visibly.
+//
+//   FIX:
+//   - Single fetch path: useFocusEffect calls fetchOrders() exclusively
+//   - `loading` (full skeleton) only shows on the very first mount
+//   - Re-focus always does a silent refresh (no skeleton flash)
+//   - Optimistic placeholder injected BEFORE fetch, merged after
+//   - Polling uses the same fetchOrders path
 // ──────────────────────────────────────────────────────────────────────────
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
     View,
     Text,
@@ -31,12 +50,14 @@ import {
     Alert,
     ActivityIndicator,
     RefreshControl,
+    Image,
 } from 'react-native';
 import { LinearGradient } from '../../components/SafeLinearGradient';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useTheme from '../../hooks/useTheme';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import orderService from '../../services/api/orderService';
 
 const { width } = Dimensions.get('window');
@@ -47,19 +68,17 @@ const formatPrice = (p) => `₹${Number(p).toLocaleString('en-IN')}`;
 
 /**
  * Normalise the raw API order shape so the UI always sees a consistent object.
- * Adjust field mappings here if your backend returns different key names.
  */
 const normaliseOrder = (raw) => ({
     id: raw._id ?? raw.id ?? '',
     date: raw.createdAt
         ? new Date(raw.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
         : raw.date ?? '',
-    // Map backend status → UI status bucket
     status: (() => {
         const s = (raw.status ?? '').toLowerCase();
         if (['cancelled', 'canceled'].includes(s)) return 'cancelled';
         if (s === 'delivered') return 'delivered';
-        return 'active'; // pending / processing / shipped / out_for_delivery
+        return 'active';
     })(),
     statusLabel: raw.statusLabel ?? raw.status ?? '',
     estimatedDate: raw.estimatedDelivery ?? raw.estimatedDate ?? '',
@@ -72,10 +91,11 @@ const normaliseOrder = (raw) => ({
     cancelReason: raw.cancellationReason ?? raw.cancelReason ?? '',
     items: (raw.items ?? []).map((item) => ({
         id: item._id ?? item.id ?? item.productId ?? '',
-        name: item.name ?? item.productName ?? '',
+        name: item.name ?? item.title ?? item.productName ?? item.product?.name ?? 'Product',
+        image: item.imageUrl ?? item.image ?? item.images?.[0] ?? item.product?.image ?? item.product?.imageUrl ?? null,
         emoji: item.emoji ?? '📦',
         qty: item.qty ?? item.quantity ?? 1,
-        price: item.price ?? 0,
+        price: item.price ?? item.unitPrice ?? item.product?.price ?? 0,
         desc: item.desc ?? item.description ?? '',
     })),
     total: raw.total ?? raw.totalAmount ?? 0,
@@ -94,7 +114,6 @@ const normaliseOrder = (raw) => ({
         desc: t.desc ?? t.description ?? '',
     })),
     refundStatus: raw.refundStatus ?? '',
-    // Capabilities derived from status
     canTrack: (() => {
         const s = (raw.status ?? '').toLowerCase();
         return ['shipped', 'out_for_delivery', 'processing'].includes(s);
@@ -103,6 +122,7 @@ const normaliseOrder = (raw) => ({
     canReturn: raw.canReturn ?? false,
     canReorder: ['cancelled', 'delivered'].includes((raw.status ?? '').toLowerCase()),
     canCancel: ['pending', 'processing'].includes((raw.status ?? '').toLowerCase()),
+    _isPlaceholder: raw._isPlaceholder ?? false,
 });
 
 // ─── Config ────────────────────────────────────────────────────────────────
@@ -182,7 +202,7 @@ const SkeletonCard = ({ colors }) => {
 };
 
 // ─── Order Card ────────────────────────────────────────────────────────────
-const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, onCancel }) => {
+const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, onCancel, onReorder }) => {
     const cfg = STATUS_CONFIG[order.status];
     const isCancelled = order.status === 'cancelled';
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -205,11 +225,7 @@ const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, o
             `Are you sure you want to cancel order ${order.id}?`,
             [
                 { text: 'No', style: 'cancel' },
-                {
-                    text: 'Yes, Cancel',
-                    style: 'destructive',
-                    onPress: () => onCancel(order.id),
-                },
+                { text: 'Yes, Cancel', style: 'destructive', onPress: () => onCancel(order.id) },
             ]
         );
     };
@@ -242,9 +258,13 @@ const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, o
                     {order.items.slice(0, 3).map((item, i) => (
                         <View
                             key={item.id || i}
-                            style={[styles.emojiChip, { backgroundColor: colors.cardAlt, borderColor: colors.border, marginLeft: i > 0 ? -8 : 0 }]}
+                            style={[styles.emojiChip, { backgroundColor: colors.cardAlt, borderColor: colors.border, marginLeft: i > 0 ? -8 : 0, overflow: 'hidden' }]}
                         >
-                            <Text style={{ fontSize: 20 }}>{item.emoji}</Text>
+                            {item.image ? (
+                                <Image source={{ uri: item.image }} style={styles.fullImage} resizeMode="cover" />
+                            ) : (
+                                <Text style={{ fontSize: 20 }}>{item.emoji}</Text>
+                            )}
                         </View>
                     ))}
                     {order.items.length > 3 && (
@@ -254,10 +274,12 @@ const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, o
                     )}
                     <View style={styles.itemNamesCol}>
                         <Text style={[styles.itemNamesText, { color: colors.textSecondary }]} numberOfLines={1}>
-                            {order.items.map((i) => i.name).join(', ')}
+                            {order.items.length > 0 ? order.items.map((i) => i.name).join(', ') : 'Processing…'}
                         </Text>
                         <Text style={[styles.itemCount, { color: colors.textMuted }]}>
-                            {order.items.reduce((a, i) => a + i.qty, 0)} item{order.items.reduce((a, i) => a + i.qty, 0) > 1 ? 's' : ''}
+                            {order.items.length > 0
+                                ? `${order.items.reduce((a, i) => a + i.qty, 0)} item${order.items.reduce((a, i) => a + i.qty, 0) > 1 ? 's' : ''}`
+                                : 'Loading items…'}
                         </Text>
                     </View>
                 </View>
@@ -303,7 +325,6 @@ const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, o
                     </View>
 
                     <View style={styles.actionBtns}>
-                        {/* Cancel — only for pending/processing */}
                         {order.canCancel && (
                             <TouchableOpacity
                                 style={[styles.actionBtn, { borderColor: '#F8717160', backgroundColor: '#F8717115' }]}
@@ -351,7 +372,7 @@ const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, o
                         {order.canReorder && (
                             <TouchableOpacity
                                 style={styles.reorderBtn}
-                                onPress={() => Alert.alert('Reorder', `Reordering items from ${order.id}`)}
+                                onPress={() => onReorder(order)}
                                 activeOpacity={0.8}
                             >
                                 <LinearGradient colors={gradients.button} style={styles.reorderGradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
@@ -361,7 +382,6 @@ const OrderCard = ({ order, colors, gradients, onPress, animDelay, navigation, o
                             </TouchableOpacity>
                         )}
 
-                        {/* View details */}
                         <TouchableOpacity
                             style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.cardAlt }]}
                             onPress={onPress}
@@ -413,54 +433,162 @@ const ErrorState = ({ colors, onRetry }) => (
 );
 
 // ─── Main Screen ───────────────────────────────────────────────────────────
-const OrdersScreen = ({ navigation }) => {
+const OrdersScreen = ({ navigation, route }) => {
     const { colors, gradients, isDark } = useTheme();
     const { uid } = useAuth();
+    const { addToCart } = useCart();
 
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // FIX: `initialLoad` is only true on the very first mount — never set back to true on re-focus.
+    // This means the skeleton only shows once. Re-focus always does a silent refresh,
+    // keeping the FlatList visible so newly fetched orders appear instantly without
+    // the list being hidden behind a skeleton.
+    const [initialLoad, setInitialLoad] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
     const [activeFilter, setActiveFilter] = useState('all');
     const [cancellingId, setCancellingId] = useState(null);
+    // Ghost event tick — incrementing this dispatches a fake internal "cancel" event.
+    // No real order is touched. Triggers the same silent-refresh path that handleCancel
+    // fires after a real cancellation. Completely invisible to the user.
+    const [ghostEventTick, setGhostEventTick] = useState(0);
 
-    // ── Fetch orders ────────────────────────────────────────────────────────
-    const fetchOrders = useCallback(async (isRefresh = false) => {
+    const pollingTimerRef = useRef(null);
+    // Track whether this is the very first focus ever
+    const hasLoadedOnce = useRef(false);
+
+    // ── Single unified fetch function ───────────────────────────────────────
+    // FIX: This is now the ONLY function that fetches orders. The old code had
+    // two paths (fetchOrders useCallback + inline poll() in useFocusEffect) that
+    // could race each other and produce inconsistent loading state.
+    const fetchOrders = useCallback(async ({
+        showSkeleton = false,
+        isRefresh = false,
+        mergeWithPlaceholder = null,
+    } = {}) => {
+        if (!uid) return;
+
+        if (showSkeleton) setInitialLoad(true);
         if (isRefresh) setRefreshing(true);
-        else setLoading(true);
         setError(null);
 
         try {
             const data = await orderService.getUserOrders(uid);
-            // API may return { orders: [...] } or a plain array
             const raw = Array.isArray(data) ? data : (data.orders ?? []);
-            setOrders(raw.map(normaliseOrder));
+            const normalised = raw.map(normaliseOrder);
+
+            setOrders((prev) => {
+                // If there's a pending placeholder that the API hasn't returned yet,
+                // keep it at the top so the user always sees their new order.
+                if (mergeWithPlaceholder) {
+                    const apiHasIt = normalised.some((o) => o.id === mergeWithPlaceholder);
+                    if (!apiHasIt) {
+                        const placeholder = prev.find((o) => o.id === mergeWithPlaceholder);
+                        return placeholder ? [placeholder, ...normalised] : normalised;
+                    }
+                }
+                return normalised;
+            });
         } catch (err) {
             console.error('Failed to load orders:', err);
-            setError(err);
+            if (showSkeleton) setError(err);
+            // On silent/poll errors, keep existing orders visible — don't blank the list
         } finally {
-            setLoading(false);
+            setInitialLoad(false);
             setRefreshing(false);
         }
     }, [uid]);
 
+    // ── Ghost event handler ─────────────────────────────────────────────────
+    // Fires whenever ghostEventTick increments (i.e. every time the screen re-focuses).
+    // Runs the exact same silent-refresh path that handleCancel uses after a real
+    // cancellation — no API cancel call, no loading state, invisible to the user.
     useEffect(() => {
-        fetchOrders();
+        if (ghostEventTick === 0 || !uid) return;
+        fetchOrders({ isRefresh: false });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ghostEventTick]);
 
-        // Refresh when screen comes into focus (e.g. returning from Detail screen)
-        const unsubscribe = navigation.addListener('focus', () => {
-            fetchOrders(true); // silent refresh
-        });
+    // ── Focus effect ────────────────────────────────────────────────────────
+    useFocusEffect(
+        useCallback(() => {
+            if (pollingTimerRef.current) {
+                clearTimeout(pollingTimerRef.current);
+                pollingTimerRef.current = null;
+            }
 
-        return unsubscribe;
-    }, [fetchOrders, navigation]);
+            // Inject optimistic placeholder if coming from checkout
+            const newOrderId = route.params?.newOrder?.orderId;
+            const newOrderTotal = route.params?.newOrder?.total;
+            let placeholderId = null;
+
+            if (newOrderId) {
+                navigation.setParams({ fromCheckout: undefined, newOrder: undefined });
+                placeholderId = newOrderId;
+
+                setOrders((prev) => {
+                    if (prev.some((o) => o.id === newOrderId)) return prev;
+                    const safeTotal = typeof newOrderTotal === 'number'
+                        ? newOrderTotal
+                        : parseFloat(String(newOrderTotal ?? '0').replace(/[^0-9.]/g, '')) || 0;
+                    return [
+                        normaliseOrder({
+                            _id: newOrderId,
+                            status: 'pending',
+                            statusLabel: 'Processing',
+                            total: safeTotal,
+                            items: [],
+                            createdAt: new Date().toISOString(),
+                            _isPlaceholder: true,
+                        }),
+                        ...prev,
+                    ];
+                });
+            }
+
+            if (!hasLoadedOnce.current) {
+                // Very first mount — show full skeleton, then fetch
+                hasLoadedOnce.current = true;
+                fetchOrders({ showSkeleton: true, mergeWithPlaceholder: placeholderId });
+            } else {
+                // Every subsequent focus — dispatch ghost event.
+                // Internally fires like a "cancel just completed": silent fetch,
+                // FlatList stays visible, fresh data appears in-place.
+                setGhostEventTick((t) => t + 1);
+            }
+
+            // For orders arriving from checkout, poll a few extra times to handle
+            // backend write delay (new order may not be in DB on first fetch).
+            if (placeholderId) {
+                let attempts = 0;
+                const pollForNew = () => {
+                    attempts++;
+                    if (attempts < 5) {
+                        pollingTimerRef.current = setTimeout(() => {
+                            fetchOrders({ mergeWithPlaceholder: placeholderId });
+                            pollForNew();
+                        }, 2000);
+                    }
+                };
+                pollForNew();
+            }
+
+            return () => {
+                if (pollingTimerRef.current) {
+                    clearTimeout(pollingTimerRef.current);
+                    pollingTimerRef.current = null;
+                }
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [uid])
+    );
 
     // ── Cancel order ────────────────────────────────────────────────────────
     const handleCancel = async (orderId) => {
         setCancellingId(orderId);
         try {
             await orderService.cancelOrder(orderId, 'Cancelled by user');
-            // Optimistically update the local list
+            // Optimistic update — immediately reflect cancelled state
             setOrders((prev) =>
                 prev.map((o) =>
                     o.id === orderId
@@ -468,11 +596,38 @@ const OrdersScreen = ({ navigation }) => {
                         : o
                 )
             );
+            // Silent refresh to sync server state — FlatList stays visible
+            fetchOrders({ isRefresh: false });
             Alert.alert('Order Cancelled', `Order ${orderId} has been cancelled successfully.`);
         } catch (err) {
             Alert.alert('Error', 'Failed to cancel the order. Please try again.');
         } finally {
             setCancellingId(null);
+        }
+    };
+
+    // ── Re-order logic ──────────────────────────────────────────────────────
+    const handleReorder = (order) => {
+        try {
+            order.items.forEach((item) => {
+                addToCart({
+                    id: item.id,
+                    title: item.name,
+                    price: item.price,
+                    image: item.image,
+                    quantity: item.qty,
+                });
+            });
+            Alert.alert(
+                'Items Added',
+                'Items from this order have been added to your cart.',
+                [
+                    { text: 'Stay Here', style: 'cancel' },
+                    { text: 'Go to Cart', onPress: () => navigation.navigate('Main', { screen: 'Cart' }) },
+                ]
+            );
+        } catch (err) {
+            Alert.alert('Error', 'Failed to reorder items.');
         }
     };
 
@@ -488,7 +643,6 @@ const OrdersScreen = ({ navigation }) => {
         cancelled: orders.filter((o) => o.status === 'cancelled').length,
     };
 
-    // Navigate to OrderDetailScreen, pass orderId so it can fetch fresh data
     const openDetail = (order) => {
         navigation.navigate('OrderDetail', { orderId: order.id });
     };
@@ -511,7 +665,7 @@ const OrdersScreen = ({ navigation }) => {
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>My Orders</Text>
                         <Text style={[styles.headerSub, { color: colors.textMuted }]}>
-                            {loading ? 'Loading…' : `${counts.all} orders total`}
+                            {initialLoad ? 'Loading…' : `${counts.all} orders total`}
                         </Text>
                     </View>
                     <TouchableOpacity
@@ -557,12 +711,15 @@ const OrdersScreen = ({ navigation }) => {
             </SafeAreaView>
 
             {/* ── Content ── */}
-            {loading ? (
+            {/* FIX: `initialLoad` (not `loading`) gates the skeleton so it only shows
+                on the very first mount. After that, the FlatList is always rendered
+                and updates in-place — new orders appear immediately on re-focus. */}
+            {initialLoad ? (
                 <ScrollView contentContainerStyle={styles.listContent}>
                     {[1, 2, 3].map((k) => <SkeletonCard key={k} colors={colors} />)}
                 </ScrollView>
             ) : error ? (
-                <ErrorState colors={colors} onRetry={() => fetchOrders()} />
+                <ErrorState colors={colors} onRetry={() => fetchOrders({ showSkeleton: true })} />
             ) : filteredOrders.length === 0 ? (
                 <EmptyState
                     filter={activeFilter}
@@ -578,7 +735,7 @@ const OrdersScreen = ({ navigation }) => {
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            onRefresh={() => fetchOrders(true)}
+                            onRefresh={() => fetchOrders({ isRefresh: true })}
                             tintColor={colors.accent}
                         />
                     }
@@ -592,6 +749,7 @@ const OrdersScreen = ({ navigation }) => {
                                 animDelay={index * 80}
                                 navigation={navigation}
                                 onCancel={handleCancel}
+                                onReorder={handleReorder}
                             />
                         </View>
                     )}
@@ -638,6 +796,8 @@ const styles = StyleSheet.create({
     statusPill: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5 },
     statusText: { fontSize: 11, fontWeight: '700' },
 
+    fullImage: { width: '100%', height: '100%' },
+
     itemsPreview: { flexDirection: 'row', alignItems: 'center', marginBottom: 14 },
     emojiChip: { width: 40, height: 40, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
     moreChip: {},
@@ -680,7 +840,6 @@ const styles = StyleSheet.create({
     shopBtn: { marginTop: 8 },
     shopBtnText: { fontSize: 15, fontWeight: '700' },
 
-    // Timeline (horizontal in modal)
     timelineStep: { flex: 1, alignItems: 'center', gap: 4 },
     timelineLine: { position: 'absolute', left: -50, right: 50, top: 8, height: 2 },
     timelineDot: {
