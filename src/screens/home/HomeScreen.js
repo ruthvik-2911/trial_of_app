@@ -553,7 +553,7 @@ const HomeScreen = ({ navigation }) => {
                             <View style={styles.headerLeft}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                                     <Image 
-                                        source={require('../../assets/icons/2 (3).png')} 
+                                        source={isDark ? require('../../assets/images/logo-dark.png') : require('../../assets/images/logo-light.png')} 
                                         style={{ width: 56, height: 56 }} 
                                         resizeMode="contain" 
                                     />

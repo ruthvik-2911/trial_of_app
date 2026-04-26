@@ -243,7 +243,7 @@ const ProfileScreen = ({ navigation }) => {
                 end={{ x: 1, y: 1 }}
             >
                 <Image 
-                    source={require('../../assets/icons/2 (3).png')} 
+                    source={isDark ? require('../../assets/images/logo-dark.png') : require('../../assets/images/logo-light.png')} 
                     style={[styles.heroBgImage, { opacity: isDark ? 0.08 : 0.05 }]} 
                     resizeMode="contain" 
                 />

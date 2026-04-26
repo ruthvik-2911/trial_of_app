@@ -96,7 +96,7 @@ if (!getApps().length) {
 // ────────────────────────────────────────────────────────────────────────────
 
 const RegisterScreen = ({ navigation }) => {
-    const { colors, gradients } = useTheme();
+    const { colors, gradients, isDark } = useTheme();
 
     // ── Pull register action from the central context ───────────────────────
     // uid, user, token are set automatically inside AuthContext.register()
@@ -363,7 +363,7 @@ const RegisterScreen = ({ navigation }) => {
                             {/* ── Logo ── */}
                             <View style={styles.logoContainer}>
                                 <Image
-                                    source={require('../../assets/icons/2 (3).png')}
+                                    source={isDark ? require('../../assets/images/logo-dark.png') : require('../../assets/images/logo-light.png')}
                                     style={{ width: 240, height: 180, marginBottom: -20 }}
                                     resizeMode="contain"
                                 />

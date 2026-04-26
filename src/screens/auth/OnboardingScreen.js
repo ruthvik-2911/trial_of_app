@@ -110,6 +110,7 @@ const FloatingParticle = ({ x, y, size, color, delay, duration }) => {
 
 // ─── Slide 1 Illustration — Luxury ─────────────────────────────────────────
 const LuxuryIllustration = ({ accent }) => {
+    const { isDark } = useTheme();
     const rotate = useRef(new Animated.Value(0)).current;
     const scale = useRef(new Animated.Value(0.85)).current;
     const glow = useRef(new Animated.Value(0.6)).current;
@@ -179,7 +180,7 @@ const LuxuryIllustration = ({ accent }) => {
             <Animated.View style={[styles.centreCircle, { borderColor: accent + '60', transform: [{ scale }] }]}>
                 <LinearGradient colors={['#231F42', '#16132E']} style={styles.centreGradient}>
                     <Image
-                        source={require('../../assets/icons/2 (3).png')}
+                        source={isDark ? require('../../assets/images/logo-dark.png') : require('../../assets/images/logo-light.png')}
                         style={styles.centreLogo}
                         resizeMode="contain"
                     />

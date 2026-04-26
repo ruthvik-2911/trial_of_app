@@ -37,8 +37,8 @@ const ITEM_SIZE = 68;
 const ITEM_STAGGER = 120; // Tightened stagger for 12 items
 const LOGO_SIZE = 100;
 
-const BAG_IMAGE = require('../../assets/icons/2 (3).png');
-const LOGO_IMAGE = require('../../assets/icons/2 (3).png');
+const BAG_IMAGE = require('../../assets/images/logo-dark.png');
+const LOGO_IMAGE = require('../../assets/images/logo-dark.png');
 
 // Varied product emojis for Fashion, Electronics, Home, and more
 const ITEM_EMOJIS = [

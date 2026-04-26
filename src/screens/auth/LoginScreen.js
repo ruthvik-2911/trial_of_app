@@ -97,7 +97,7 @@ if (!getApps().length) {
 // ────────────────────────────────────────────────────────────────────────────
 
 const LoginScreen = ({ navigation }) => {
-    const { colors, gradients } = useTheme();
+    const { colors, gradients, isDark } = useTheme();
 
     // ── Pull login action from the central context ──────────────────────────
     const { login } = useAuth();
@@ -329,7 +329,7 @@ const LoginScreen = ({ navigation }) => {
                             {/* ── Logo ── */}
                             <View style={styles.logoContainer}>
                                 <Image
-                                    source={require('../../assets/icons/2 (3).png')}
+                                    source={isDark ? require('../../assets/images/logo-dark.png') : require('../../assets/images/logo-light.png')}
                                     style={{ width: 240, height: 180, marginBottom: -20 }}
                                     resizeMode="contain"
                                 />
