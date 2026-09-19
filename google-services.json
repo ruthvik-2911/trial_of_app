@@ -12,7 +12,20 @@
           "package_name": "goodkart.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "160879269054-2a9c10bqs7epdbhtnih5o12am31rfcj4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "goodkart.app",
+            "certificate_hash": "c7269dc25975e636cf7e0f70e56bbabd02649102"
+          }
+        },
+        {
+          "client_id": "160879269054-apt5gfnsmmd5ak250m75jd045r5tsr8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCSkzmd9JRWLkSW5RGrPg1ZYAKcypdlPh4"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "160879269054-apt5gfnsmmd5ak250m75jd045r5tsr8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
