@@ -271,6 +271,12 @@ const RegisterScreen = ({ navigation }) => {
 
         setIsLoading(true);
         try {
+            if (GoogleSignin && ENV.GOOGLE_WEB_CLIENT_ID) {
+                GoogleSignin.configure({
+                    webClientId: ENV.GOOGLE_WEB_CLIENT_ID,
+                    offlineAccess: false,
+                });
+            }
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const userInfo = await GoogleSignin.signIn();
 
