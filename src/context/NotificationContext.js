@@ -7,10 +7,61 @@ const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [fcmToken, setFcmToken] = useState(null);
+    const [expoPushToken, setExpoPushToken] = useState(null);
 
-    // Load notifications from AsyncStorage on app start
+    // Initialize Push Notifications & FCM Token on app start
     useEffect(() => {
         loadNotifications();
+
+        let isMounted = true;
+        let notificationListener = null;
+        let responseListener = null;
+
+        const setupPushNotifications = async () => {
+            try {
+                const { fcmToken: fcm, expoPushToken: expo } =
+                    await DeviceNotificationService.registerForPushNotificationsAsync();
+                if (isMounted) {
+                    setFcmToken(fcm);
+                    setExpoPushToken(expo);
+                }
+
+                // Listen for incoming notifications when app is in foreground
+                notificationListener = DeviceNotificationService.addNotificationReceivedListener(
+                    (notification) => {
+                        const { title, body, data } = notification?.request?.content || {};
+                        if (title || body) {
+                            addNotification({
+                                type: data?.type || 'push',
+                                icon: 'notifications',
+                                iconColor: '#00D9FF',
+                                title: title || 'Notification',
+                                message: body || '',
+                                actionData: data || {},
+                            });
+                        }
+                    }
+                );
+
+                // Listen for when user taps on a notification
+                responseListener = DeviceNotificationService.addNotificationResponseReceivedListener(
+                    (response) => {
+                        console.log('[NotificationContext] User tapped notification:', response?.notification?.request?.content);
+                    }
+                );
+            } catch (err) {
+                console.error('[NotificationContext] Push setup error:', err);
+            }
+        };
+
+        setupPushNotifications();
+
+        return () => {
+            isMounted = false;
+            if (notificationListener?.remove) notificationListener.remove();
+            if (responseListener?.remove) responseListener.remove();
+        };
     }, []);
 
     // Save notifications to AsyncStorage whenever they change
@@ -224,6 +275,8 @@ export const NotificationProvider = ({ children }) => {
     const value = {
         notifications,
         isLoading,
+        fcmToken,
+        expoPushToken,
         addNotification,
         markAsRead,
         markAllAsRead,

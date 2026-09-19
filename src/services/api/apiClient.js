@@ -22,6 +22,16 @@ const apiClient = axios.create({
         'Expires': '0',
     },
 });
+// Helper to identify public routes that do not require authentication
+const isPublicRoute = (url = '') => {
+    if (!url) return false;
+    const path = url.replace(/^https?:\/\/[^\/]+/, '');
+    return (
+        path.startsWith('/products') ||
+        path.startsWith('/auth/') ||
+        path.includes('/public-profile')
+    );
+};
 
 // Request interceptor - auto-refresh Firebase token before each request
 apiClient.interceptors.request.use(
@@ -47,8 +57,8 @@ apiClient.interceptors.request.use(
             } else if (token && token.startsWith('test_')) {
                 config.headers['X-Test-UID'] = token;
                 console.log('📡 [apiClient] Using X-Test-UID for test user:', token);
-            } else {
-                console.warn('📡 [apiClient] No token available for request to:', config.url);
+            } else if (config.requiresAuth && !isPublicRoute(config.url)) {
+                console.warn('📡 [apiClient] No token available for protected request to:', config.url);
             }
         } catch (e) {
             console.error('📡 [apiClient] Failed to get auth token:', e);

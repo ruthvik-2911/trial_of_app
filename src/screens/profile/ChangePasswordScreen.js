@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 
 import useTheme from '../../hooks/useTheme';
+import { useAuth } from '../../context/AuthContext';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 // ─── Password strength checker ────────────────────────────────────────────────
 const getStrength = pwd => {
@@ -39,6 +41,7 @@ const strengthColor = (label, colors) => {
 
 const ChangePasswordScreen = ({ navigation }) => {
     const { colors, isDark } = useTheme();
+    const { user } = useAuth();
 
     const [current, setCurrent] = useState('');
     const [newPwd, setNewPwd] = useState('');
@@ -48,6 +51,24 @@ const ChangePasswordScreen = ({ navigation }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [focusedField, setFocusedField] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const handleForgotCurrentPassword = async () => {
+        const targetEmail = user?.email;
+        if (!targetEmail) {
+            Alert.alert('Forgot Password', 'Please enter your email address on the login screen to reset your password.');
+            return;
+        }
+        try {
+            setLoading(true);
+            const auth = getAuth();
+            await sendPasswordResetEmail(auth, targetEmail);
+            Alert.alert('Password Reset Email Sent 📧', `A password reset link has been sent to ${targetEmail}. Please check your inbox.`);
+        } catch (err) {
+            Alert.alert('Reset Failed', err.message || 'Could not send password reset email.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const strength = getStrength(newPwd);
     const strColor = strengthColor(strength.label, colors);
@@ -277,7 +298,7 @@ const ChangePasswordScreen = ({ navigation }) => {
                     {/* ── Forgot password link ── */}
                     <TouchableOpacity
                         style={s.forgotBtn}
-                        onPress={() => Alert.alert('Forgot Password', 'A reset link will be sent to your email.')}
+                        onPress={handleForgotCurrentPassword}
                         activeOpacity={0.7}
                     >
                         <Text style={[s.forgotText, { color: colors.primary }]}>

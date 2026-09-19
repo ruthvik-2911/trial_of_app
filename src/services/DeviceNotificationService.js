@@ -1,26 +1,18 @@
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 /**
  * DeviceNotificationService
- * Handles native mobile notifications using expo-notifications.
- *
- * expo-notifications is an optional native module — it requires a custom
- * Expo dev build (it does NOT work in Expo Go).
- *
- * If the package is not yet installed / linked, every method here degrades
- * gracefully to a no-op so the rest of the app continues to work.
- *
- * To fully enable push notifications:
- *   npx expo install expo-notifications
- *   npx expo run:android   (or run:ios)
+ * Handles native mobile notifications and Firebase FCM Push Notifications
+ * using expo-notifications.
  */
 
-// ── Optional import — won't crash if the package is missing ────────────────
 let Notifications = null;
 try {
     Notifications = require('expo-notifications');
 
-    // Configure foreground behaviour only when the module is available
+    // Configure foreground notification handling
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
             shouldShowAlert: true,
@@ -30,13 +22,10 @@ try {
     });
 } catch (_) {
     console.warn(
-        '[DeviceNotificationService] expo-notifications is not installed. ' +
-        'Run: npx expo install expo-notifications\n' +
-        'Native push notifications will be disabled until then.'
+        '[DeviceNotificationService] expo-notifications is not available.'
     );
 }
 
-// ── Helper ─────────────────────────────────────────────────────────────────
 const isAvailable = () => Notifications !== null;
 
 const DeviceNotificationService = {
@@ -66,6 +55,9 @@ const DeviceNotificationService = {
                     importance: Notifications.AndroidImportance.MAX,
                     vibrationPattern: [0, 250, 250, 250],
                     lightColor: '#FF231F7C',
+                    sound: 'default',
+                    enableVibrate: true,
+                    showBadge: true,
                 });
             }
 
@@ -77,15 +69,89 @@ const DeviceNotificationService = {
     },
 
     /**
+     * Register device for FCM Push Notifications.
+     * Requests permissions, sets up Android channel, obtains FCM & Expo push tokens,
+     * and saves them to AsyncStorage.
+     * @returns {Promise<{ fcmToken: string|null, expoPushToken: string|null }>}
+     */
+    registerForPushNotificationsAsync: async () => {
+        if (!isAvailable()) {
+            return { fcmToken: null, expoPushToken: null };
+        }
+
+        const hasPermission = await DeviceNotificationService.requestPermissions();
+        if (!hasPermission) {
+            return { fcmToken: null, expoPushToken: null };
+        }
+
+        let fcmToken = null;
+        let expoPushToken = null;
+
+        try {
+            // Get raw FCM Device Push Token (from Firebase Cloud Messaging)
+            try {
+                const deviceTokenObj = await Notifications.getDevicePushTokenAsync();
+                fcmToken = deviceTokenObj?.data || null;
+                if (fcmToken) {
+                    console.log('🔥 [FCM Push Token]:', fcmToken);
+                    await AsyncStorage.setItem('@fcm_token', fcmToken);
+                }
+            } catch (fcmErr) {
+                console.warn('[DeviceNotificationService] Could not fetch raw FCM token:', fcmErr?.message);
+            }
+
+            // Get Expo Push Token as fallback/secondary
+            try {
+                const projectId = Constants?.expoConfig?.extra?.eas?.projectId || Constants?.easConfig?.projectId;
+                const expoTokenObj = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
+                expoPushToken = expoTokenObj?.data || null;
+                if (expoPushToken) {
+                    console.log('📲 [Expo Push Token]:', expoPushToken);
+                    await AsyncStorage.setItem('@push_token', expoPushToken);
+                }
+            } catch (expoPushErr) {
+                console.warn('[DeviceNotificationService] Could not fetch Expo push token:', expoPushErr?.message);
+            }
+
+            return { fcmToken, expoPushToken };
+        } catch (error) {
+            console.error('[DeviceNotificationService] registerForPushNotificationsAsync error:', error);
+            return { fcmToken: null, expoPushToken: null };
+        }
+    },
+
+    /**
+     * Get locally stored FCM token.
+     */
+    getSavedFcmToken: async () => {
+        try {
+            return await AsyncStorage.getItem('@fcm_token');
+        } catch (_) {
+            return null;
+        }
+    },
+
+    /**
+     * Add listener for incoming notifications while app is in foreground.
+     */
+    addNotificationReceivedListener: (callback) => {
+        if (!isAvailable() || typeof callback !== 'function') return { remove: () => {} };
+        return Notifications.addNotificationReceivedListener(callback);
+    },
+
+    /**
+     * Add listener for user interaction with a notification (tap/click).
+     */
+    addNotificationResponseReceivedListener: (callback) => {
+        if (!isAvailable() || typeof callback !== 'function') return { remove: () => {} };
+        return Notifications.addNotificationResponseReceivedListener(callback);
+    },
+
+    /**
      * Schedule a local notification.
-     * @param {Object} params
-     * @param {string} params.title
-     * @param {string} params.body
-     * @param {Object} [params.data]
-     * @param {number} [params.seconds=1]
      */
     showAlert: async ({ title, body, data = {}, seconds = 1 }) => {
-        if (!isAvailable()) return; // silently skip — app still works
+        if (!isAvailable()) return;
         try {
             const hasPermission = await DeviceNotificationService.requestPermissions();
             if (!hasPermission) return;
@@ -95,7 +161,7 @@ const DeviceNotificationService = {
                     title,
                     body,
                     data,
-                    sound: true,
+                    sound: 'default',
                     ...(Platform.OS === 'android' ? { channelId: 'default' } : {}),
                 },
                 trigger: { seconds },

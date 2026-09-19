@@ -38,6 +38,7 @@ import {
     initializeAuth,
     getReactNativePersistence,
     signInWithEmailAndPassword,
+    sendPasswordResetEmail,
     signInWithPhoneNumber,
     RecaptchaVerifier,
     GoogleAuthProvider,
@@ -188,6 +189,33 @@ const LoginScreen = ({ navigation }) => {
             setIsLoading(false);
             console.error('❌ [LoginScreen] [EMAIL]', err.code, err.message);
             Alert.alert('Login Failed', getFriendlyError(err.code, err.message));
+        }
+    };
+
+    // ── Forgot Password ──────────────────────────────────────────────────────
+    const handleForgotPassword = async () => {
+        if (!email || !email.trim()) {
+            Alert.alert('Forgot Password', 'Please enter your email address above to receive a password reset link.');
+            return;
+        }
+        if (!validateEmail(email.trim())) {
+            Alert.alert('Forgot Password', 'Please enter a valid email address.');
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const auth = getAuth();
+            await sendPasswordResetEmail(auth, email.trim());
+            Alert.alert(
+                'Password Reset Sent 📧',
+                `A password reset email has been sent to ${email.trim()}. Please check your inbox.`
+            );
+        } catch (err) {
+            console.error('❌ [LoginScreen] [FORGOT_PASSWORD]', err.code, err.message);
+            Alert.alert('Reset Failed', getFriendlyError(err.code, err.message));
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -396,7 +424,7 @@ const LoginScreen = ({ navigation }) => {
                                         </TouchableOpacity>
                                     </View>
 
-                                    <TouchableOpacity style={styles.forgotPasswordContainer}>
+                                    <TouchableOpacity style={styles.forgotPasswordContainer} onPress={handleForgotPassword}>
                                         <Text style={[styles.forgotPasswordText, { color: colors.accent }]}>Forgot Password?</Text>
                                     </TouchableOpacity>
 

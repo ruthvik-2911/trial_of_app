@@ -6,22 +6,23 @@
     "scheme": "goodkart",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
-    "splash": {
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "package": "com.vinith_2005.gudcart",
-      "googleServicesFile": "./google-services.json",
-      "newArchEnabled": true
+      "package": "goodkart.app",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {},
     "plugins": [
+      "expo-notifications",
       "expo-web-browser",
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "expo-asset",
+      "expo-sharing",
+      "expo-status-bar",
+      "expo-font"
     ],
     "extra": {
       "eas": {
