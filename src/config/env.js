@@ -6,8 +6,8 @@
 
 export const ENV = {
   // Google Auth
-  GOOGLE_WEB_CLIENT_ID: '158491180234-qu1de6oe3plrsfcdcfmo0rl49757p7ib.apps.googleusercontent.com',
-  GOOGLE_ANDROID_CLIENT_ID: '158491180234-qu1de6oe3plrsfcdcfmo0rl49757p7ib.apps.googleusercontent.com',
+  GOOGLE_WEB_CLIENT_ID: '160879269054-apt5gfnsmmd5ak250m75jd045r5tsr8a.apps.googleusercontent.com',
+  GOOGLE_ANDROID_CLIENT_ID: '160879269054-apt5gfnsmmd5ak250m75jd045r5tsr8a.apps.googleusercontent.com',
 
   // Razorpay
   RAZORPAY_KEY_ID: 'rzp_test_SHwPxTs74SFbLu',
