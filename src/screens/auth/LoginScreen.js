@@ -80,13 +80,12 @@ WebBrowser.maybeCompleteAuthSession();
 
 // Firebase is initialised once for the whole app; guard against double-init.
 const firebaseConfig = {
-    apiKey: 'AIzaSyAgz9OL6NYOxwxpzgz7e6Y1Zk6861Gpvt0',
-    authDomain: 'sellsathi-94ede.firebaseapp.com',
-    projectId: 'sellsathi-94ede',
-    storageBucket: 'sellsathi-94ede.firebasestorage.app',
-    messagingSenderId: '213392011043',
-    appId: '1:213392011043:web:669298ae968e8af8a6a696',
-    measurementId: 'G-TRNXGBX0HL',
+    apiKey: 'AIzaSyDCODFBB4-4GcujERbjX75Imv_ZXk29MR0',
+    authDomain: 'goodkart.firebaseapp.com',
+    projectId: 'goodkart',
+    storageBucket: 'goodkart.firebasestorage.app',
+    messagingSenderId: '158491180234',
+    appId: '1:158491180234:android:40f59ee33e8c98d6054833',
 };
 
 if (!getApps().length) {
