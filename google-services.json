@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "158491180234",
-    "project_id": "goodkart",
-    "storage_bucket": "goodkart.firebasestorage.app"
+    "project_number": "160879269054",
+    "project_id": "goodkart-a9c3a",
+    "storage_bucket": "goodkart-a9c3a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:158491180234:android:40f59ee33e8c98d6054833",
+        "mobilesdk_app_id": "1:160879269054:android:fe3ecef62e6b3627cbbaef",
         "android_client_info": {
           "package_name": "goodkart.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "158491180234-qu1de6oe3plrsfcdcfmo0rl49757p7ib.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDCODFBB4-4GcujERbjX75Imv_ZXk29MR0"
+          "current_key": "AIzaSyCSkzmd9JRWLkSW5RGrPg1ZYAKcypdlPh4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "158491180234-qu1de6oe3plrsfcdcfmo0rl49757p7ib.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
